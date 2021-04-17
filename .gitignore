@@ -23,5 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 
 # .NET Functions output
-[Bb]in/
-[Oo]bj/
+api/[Bb]in/
+api/[Oo]bj/

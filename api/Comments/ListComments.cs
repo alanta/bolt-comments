@@ -23,7 +23,7 @@ namespace Bolt.Comments
         {
 
 
-            TableQuery<Comment>  query = table.CreateQuery<Comment>().Where(
+            var query =  new TableQuery<Comment>().Where(
                 TableQuery.GenerateFilterConditionForBool( nameof(Comment.Approved), QueryComparisons.Equal, true )
                 .AddPathQuery(path))
                 .Take(250);
@@ -35,7 +35,7 @@ namespace Bolt.Comments
                 return new NoContentResult();
             }
 
-            return new OkObjectResult(comments);
+            return new OkObjectResult(comments.Select( c => Contracts.Mapper.Map( c )).ToArray());
         }
 
         [FunctionName(nameof(ListCommentsForApproval))]
@@ -57,7 +57,7 @@ namespace Bolt.Comments
                 return new NoContentResult();
             }
 
-            return new OkObjectResult(comments);
+            return new OkObjectResult(comments.Select( c => Contracts.Mapper.Map( c )).ToArray());
         }
 
         private static string AddPathQuery( this string filter, string? path )
