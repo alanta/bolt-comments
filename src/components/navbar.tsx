@@ -1,7 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useApprovalsService } from "services/comments.service";
 
 export default function Navbar(props:any) {
+
+    const service = useApprovalsService();
+
     return<>
 <nav className="topnav navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
 <div className="container-fluid">
@@ -15,7 +19,7 @@ export default function Navbar(props:any) {
                 <Link className="nav-link" to="/comments">Comments</Link>
 			</li>
             <li className="nav-item">
-                <Link className="nav-link" to="/approvals">Approvals</Link>
+                <Link className="nav-link" to="/approvals">Approvals {service.status === 'loaded' && <span className="badge badge-info ml-2">{service.payload.length}</span>}</Link>
 			</li>
 			{/*<li className="nav-item dropdown">
 			    <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Examples </a>
