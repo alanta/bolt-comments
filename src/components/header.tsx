@@ -1,9 +1,35 @@
 import './header.css'
 
-export default function Header(props:any) {
-    return <>
+export enum UISize{
+    Small = "sm",
+    Large = "lg"
+}
+
+export enum UIColor{
+    Primary="primary",
+    Info="info",
+    Secondary="secondary",
+    Success="success",
+    Warning="warning",
+    Danger="danger",
+    Purple="purple",
+    Cyan="cyan"
+}
+
+export interface HeaderProps{
+    size?: UISize;
+    color?: UIColor;
+    children?: React.ReactNode;
+}
+
+const Header: React.FC<HeaderProps> = (props) => {
+    
+    props = {...{size:UISize.Large, color: UIColor.Primary}, ...props}
+
+    return (
+<>
 <header>
-    <div className="jumbotron jumbotron-lg jumbotron-fluid mb-0 pb-3 bg-primary position-relative">
+    <div className={"jumbotron jumbotron-"+props.size+" jumbotron-fluid mb-0 pb-3 bg-"+props.color+" position-relative"}>
         <div className="container-fluid text-white h-100">
             <div className="d-lg-flex align-items-center justify-content-between text-center pl-lg-5">
             { props.children }
@@ -14,5 +40,8 @@ export default function Header(props:any) {
     <path className="bg-primary" d="M685.6,38.8C418.7-11.1,170.2,9.9,0,30v96h1440V30C1252.7,52.2,1010,99.4,685.6,38.8z"/>
     </svg>
 </header>
-</>
-}
+</> )
+};
+
+
+export default Header;

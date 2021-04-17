@@ -1,4 +1,4 @@
-import Header from "components/header";
+import Header, { UISize } from "components/header";
 import React from "react";
 import moment from 'moment'
 import { useApprovalsService } from 'services/comments.service';
@@ -10,7 +10,7 @@ const Approvals : React.FC<{}> = () =>  {
 
   return (
     <>
-    <Header>
+    <Header size={UISize.Small}>
         <div className="col pt-4 pb-4">
             <h1 className="display-3">Approvals</h1>
         </div>
@@ -22,7 +22,6 @@ const Approvals : React.FC<{}> = () =>  {
     {service.status === 'loaded' &&
       <section className="pt-4 pb-5 aos-init aos-animate">
         <div className="container">
-        <h3 className="h5 mb-4 font-weight-bold">Table</h3>
         <table className="table table-hover">
           <thead className="thead-dark">
             <tr>
@@ -50,6 +49,7 @@ const Approvals : React.FC<{}> = () =>  {
     </>
   );
 }
+
 
 
 export default Approvals;

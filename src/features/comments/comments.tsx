@@ -22,7 +22,6 @@ const Comments : React.FC<{}> = () =>  {
     {service.status === 'loaded' &&
       <section className="pt-4 pb-5 aos-init aos-animate">
         <div className="container">
-        <h3 className="h5 mb-4 font-weight-bold">Table</h3>
         <table className="table table-hover">
           <thead className="thead-dark">
             <tr>
