@@ -1,10 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAuthentication } from "services/auth.service";
 import { useApprovalsService } from "services/comments.service";
 
 export default function Navbar(props:any) {
 
     const service = useApprovalsService();
+    const auth = useAuthentication();
 
     return<>
 <nav className="topnav navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
@@ -14,6 +16,7 @@ export default function Navbar(props:any) {
 	<span className="navbar-toggler-icon"></span>
 	</button>
 	<div className="navbar-collapse collapse" id="navbarColor02">
+        { auth.status === 'loaded' && auth.payload.authenticated &&
 		<ul className="navbar-nav mr-auto d-flex align-items-center">
 			<li className="nav-item">
                 <Link className="nav-link" to="/comments">Comments</Link>
@@ -21,23 +24,13 @@ export default function Navbar(props:any) {
             <li className="nav-item">
                 <Link className="nav-link" to="/approvals">Approvals {service.status === 'loaded' && <span className="badge badge-info ml-2">{service.payload.length}</span>}</Link>
 			</li>
-			{/*<li className="nav-item dropdown">
-			    <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Examples </a>
-                <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a className="dropdown-item" href="./landing.html">Home Landing</a>
-                    <a className="dropdown-item" href="./login.html">User Login</a>
-                    <a className="dropdown-item" href="./blog.html">Blog Index</a>
-                    <a className="dropdown-item" href="./page.html">Sample Page</a>
-                </div>
-            </li>
-			<li className="nav-item">
-			    <a className="nav-link" href="https://github.com/alanta/bolt-comments">Docs</a>
-			</li>*/}
 		</ul>
+        }
 		<ul className="navbar-nav ml-auto d-flex align-items-center">
 			<li className="nav-item">
 			<span className="nav-link">
-			<Link className="btn btn-info btn-round shadow-sm" to="/login" ><i className="fas fa-arrow-alt-circle-right"></i> Login</Link>
+            { auth.status === 'loaded' && !auth.payload.authenticated  && <Link className="btn btn-info btn-round shadow-sm" to="/login" ><i className="fas fa-arrow-alt-circle-right"></i> Login</Link> }
+            { auth.status === 'loaded' && auth.payload.authenticated  && <a className="btn btn-info btn-round shadow-sm" href="/.auth/logout" ><i className="fas fa-times-circle"></i> Logout</a> }
 			</span>
 			</li>
 		</ul>
