@@ -4,16 +4,35 @@ Simple blog comments with Azure Functions
 
 ## About this project
 
-This project provides easy self-hosted comments for your blog on Azure Functions, including a management app running in an Azure Static Web Apps.
+This project provides easy self-hosted comments for your blog on Azure Functions, including a management app running in an Azure Static Web Apps (SWA).
 The backing store is Azure Storage Tables.
 
 ## Running this app on your local machine
 
 Requirements
 * Azure Functions CLI
-* Azure Static Web Apps CLI
+* Azure Static Web Apps CLI (SWA CLI)
 * Azure Storeage Emulator
+* React tools
 * VS Code
+
+## App development
+
+In VS Code you can run the app from the terminal. I'm assuming you have the react tools installed as well as the SWA CLI.
+From a terminal window start the React dev server:
+
+`yarn run start`
+
+This will launch the react dev server on `http://localhost:3000`. However Azure Static Web Apps use a proxy service to integrate functions, authentication and other features.
+So in a new terminal run the full app using the Azure Static WebApp CLI:
+
+`swa start http://localhost:3000 --api ./api`
+
+This should launch the Bolt UI on `http://localhost:4280/`
+
+## API Development
+
+In VS Code: hit `ctrl-f5` to launch just the functions. Note that authentication relies on Static Web Apps, so you're probably better off running the integrated solution for most dev work.
 
 ## Front-end development
 
@@ -42,43 +61,4 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
