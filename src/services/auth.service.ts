@@ -3,12 +3,16 @@ import { Service } from 'services/service';
 
 export class UserInfo{
     authenticated: boolean = false;
-    clientPrincipal?: any;
+    clientPrincipal?: clientPrincipal;
 }
 
-export class clientPrincipal
-
-{"clientPrincipal":{"userId":"f7afd2e4f3c9cb82edd3c283e6d48cb9","userRoles":["anonymous","authenticated"],"identityProvider":"aad","userDetails":"Marnix van Valen"}}
+export interface clientPrincipal
+{
+  userId: string;
+  userRoles?: string[];
+  identityProvider:string;
+  userDetails:string;
+}
 
 export const useAuthentication = () => {
   const [result, setResult] = useState<Service<UserInfo>>({

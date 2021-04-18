@@ -5,7 +5,7 @@ import { useApprovalsService } from "services/comments.service";
 
 export default function Navbar(props:any) {
 
-    const service = useApprovalsService();
+    const service = useApprovalsService(); // todo : don't fetch number of pending approvals if not authenticated
     const auth = useAuthentication();
 
     return<>
