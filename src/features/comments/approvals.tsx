@@ -1,12 +1,14 @@
 import Header, { UISize } from "components/header";
-import React from "react";
+import React, { useEffect } from "react";
 import moment from 'moment'
 import { useApprovalsService } from 'services/comments.service';
-
 
 const Approvals : React.FC<{}> = () =>  {
 
   const service = useApprovalsService();
+  useEffect(() => {
+      document.title = "Approvals - Bolt Comments"
+  }, []);
 
   return (
     <>
@@ -15,13 +17,16 @@ const Approvals : React.FC<{}> = () =>  {
             <h1 className="display-3">Approvals</h1>
         </div>
     </Header>
-    {service.status === 'loading' && <div>Loading...</div>}
-    {service.status === 'error' && (
-        <div>Error, the backend moved to the dark side.</div>
-      )}
-    {service.status === 'loaded' &&
-      <section className="pt-4 pb-5 aos-init aos-animate">
+    <section className="pt-4 pb-5 aos-init aos-animate">
         <div className="container">
+        {service.status === 'loading' && <div className="alert alert-purple" role="alert"><i className="fas fa-spinner"></i> Loading...</div>}
+    {service.status === 'error' && (
+        <div className="alert alert-danger" role="alert"><i className="fas fa-times"></i> Error, the backend moved to the dark side.</div>
+      )}
+    {service.status === 'loaded' && (!service.payload || service.payload.length === 0 ) &&
+        <div className="alert alert-success" role="alert"><i className="fas fa-check"></i> No pending approvals found.</div> }
+    {service.status === 'loaded' && (service.payload && service.payload.length > 0 ) &&
+      
         <table className="table table-hover">
           <thead className="thead-dark">
             <tr>
@@ -44,8 +49,9 @@ const Approvals : React.FC<{}> = () =>  {
           ))}
           </tbody>
         </table>
+        }
         </div>
-      </section>}
+      </section>
     </>
   );
 }

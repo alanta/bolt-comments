@@ -1,5 +1,5 @@
-import Header from "components/header";
-import React from "react";
+import Header, { UISize } from "components/header";
+import React, { useEffect } from "react";
 import moment from 'moment'
 import { useCommentsService } from 'services/comments.service';
 
@@ -7,21 +7,28 @@ import { useCommentsService } from 'services/comments.service';
 const Comments : React.FC<{}> = () =>  {
 
   const service = useCommentsService();
+  
+  useEffect(() => {
+    document.title = "Comments - Bolt Comments"
+}, []);
 
   return (
     <>
-    <Header>
+    <Header size={UISize.Small}>
         <div className="col pt-4 pb-4">
             <h1 className="display-3">Comments</h1>
         </div>
     </Header>
-    {service.status === 'loading' && <div>Loading...</div>}
-    {service.status === 'error' && (
-        <div>Error, the backend moved to the dark side.</div>
-      )}
-    {service.status === 'loaded' &&
-      <section className="pt-4 pb-5 aos-init aos-animate">
+    <section className="pt-4 pb-5 aos-init aos-animate">
         <div className="container">
+        {service.status === 'loading' && <div className="alert alert-purple" role="alert"><i className="fas fa-spinner"></i> Loading...</div>}
+    {service.status === 'error' && (
+        <div className="alert alert-danger" role="alert"><i className="fas fa-spinner"></i> Error, the backend moved to the dark side.</div>
+      )}
+     {service.status === 'loaded' && (!service.payload || service.payload.length === 0 ) &&
+        <div className="alert alert-danger" role="alert"><i className="fas fa-exclamation-circle"></i> No comments found.</div> }
+    {service.status === 'loaded' && (service.payload && service.payload.length > 0 ) &&
+
         <table className="table table-hover">
           <thead className="thead-dark">
             <tr>
@@ -44,8 +51,9 @@ const Comments : React.FC<{}> = () =>  {
           ))}
           </tbody>
         </table>
+        }
         </div>
-      </section>}
+      </section>
     </>
   );
 }

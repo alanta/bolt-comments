@@ -1,4 +1,10 @@
+import React, { useEffect } from "react";
+
 export default function Login(props: any) {
+    useEffect(() => {
+        document.title = "Login - Bolt Comments"
+    }, []);
+
     return (
       
 <div className="d-md-flex h-md-100 align-items-center">

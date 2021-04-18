@@ -22,7 +22,7 @@ export default function Navbar(props:any) {
                 <Link className="nav-link" to="/comments">Comments</Link>
 			</li>
             <li className="nav-item">
-                <Link className="nav-link" to="/approvals">Approvals {service.status === 'loaded' && <span className="badge badge-info ml-2">{service.payload.length}</span>}</Link>
+                <Link className="nav-link" to="/approvals">Approvals {service.status === 'loaded' && service.payload.length > 0 && <span className="badge badge-info ml-2">{service.payload.length}</span>}</Link>
 			</li>
 		</ul>
         }

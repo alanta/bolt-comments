@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Service } from 'services/service';
 import { Comment } from 'models/comment';
+import { resolve } from 'q';
 
 export const useCommentsService = () => {
   const [result, setResult] = useState<Service<Comment[]>>({
@@ -9,8 +10,9 @@ export const useCommentsService = () => {
 
   useEffect(() => {
     fetch('/api/comment/approved')
-      .then(response => response.json())
-      .then(response => setResult({ status: 'loaded', payload: response }))
+      .then(response => response.text())
+      .then(response => resolve(!response || response.length === 0) ? [] : JSON.parse(response) )
+      .then(data => setResult({ status: 'loaded', payload: data }))
       .catch(error => setResult({ status: 'error', error }));
   }, []);
 
@@ -24,8 +26,9 @@ export const useApprovalsService = () => {
 
   useEffect(() => {
     fetch('/api/comment/approvals')
-      .then(response => response.json())
-      .then(response => setResult({ status: 'loaded', payload: response }))
+      .then(response => response.text())
+      .then(response => resolve(!response || response.length === 0) ? [] : JSON.parse(response) )
+      .then(data => setResult({ status: 'loaded', payload: data }))
       .catch(error => setResult({ status: 'error', error }));
   }, []);
 

@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "components/header";
 
 export default function Home(props: any) {
+    useEffect(() => {
+        document.title = "Bolt Comments"
+    }, []);
+
   return (
     <>
       <Header>
@@ -15,40 +19,98 @@ export default function Home(props: any) {
       </Header>
       <main className="container">
         <section className="pt-4 pb-5" data-aos="fade-up">
-          <h3 className="h5 mb-4 font-weight-bold">Icons</h3>
+          <h3 className="h5 mb-4 font-weight-bold">Manage your own comments</h3>
           <p className="mb-5">
-            Anchor UI Kit comes with latest Font Awesome (5.3.1), the web’s most
-            popular icon set and toolkit.
+            Bolt Comments is a simple service with a nice UI to manage the blog comments for your Jamstack site. This is an Azure Static Web App, but you can host your site any any platform you like.
           </p>
-          <span className="inline-block mr-3">
-            <i className="fa fa-heart text-danger"></i>
-            <i className="fa fa-heart text-danger fa-2x"></i>
-            <i className="fa fa-heart text-danger fa-3x"></i>
-          </span>
-          <span className="mr-3">
-            <span className="iconbox iconmedium rounded-circle text-primary">
-              <i className="fab fa-facebook-f"></i>
-            </span>
-            <span className="iconbox iconmedium rounded-circle text-info">
-              <i className="fab fa-twitter"></i>
-            </span>
-            <span className="iconbox iconmedium rounded-circle text-danger">
-              <i className="fab fa-google"></i>
-            </span>
-          </span>
-          <span className="mr-3">
-            <span className="iconbox iconsmall fill rounded-circle bg-primary text-white shadow border-0">
-              <i className="fas fa-cart-arrow-down"></i>
-            </span>
-            <span className="iconbox iconmedium fill rounded-circle bg-warning text-white shadow border-0">
-              <i className="fas fa-coffee"></i>
-            </span>
-            <span className="iconbox iconlarge fill rounded-circle bg-success text-white shadow border-0">
-              <i className="fa fa-book-reader"></i>
-            </span>
-          </span>
+
+          <div className="container pt-5 pb-5 mt-4 aos-init aos-animate" data-aos="fade-up">
+            <div className="row gap-y">
+                <div className="col-md-6 col-xl-4">
+                    <div className="media">
+                        <div className="iconbox iconmedium rounded-circle text-info mr-4">
+                            <i className="fas fa-layer-group"></i>
+                        </div>
+                        <div className="media-body">
+                            <h5>Easy to integrate</h5>
+                            <p className="text-muted">
+                                Simple API, no fuss.<br/> Works with any Jamstack site.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-6 col-xl-4">
+                    <div className="media">
+                        <div className="iconbox iconmedium rounded-circle text-warning mr-4">
+                            <i className="fas fa-shield-alt"></i>
+                        </div>
+                        <div className="media-body">
+                            <h5>Privacy proof</h5>
+                            <p className="text-muted">
+                                No tracking, you own your data.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-6 col-xl-4">
+                    <div className="media">
+                        <div className="iconbox iconmedium rounded-circle text-cyan mr-4">
+                            <i className="fab fa-microsoft"></i>
+                        </div>
+                        <div className="media-body">
+                            <h5>Runs on Azure</h5>
+                            <p className="text-muted">
+                                Cloud native app, running on a world-class cloud.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-6 col-xl-4">
+                    <div className="media">
+                        <div className="iconbox iconmedium rounded-circle text-purple mr-4">
+                            <i className="fab fa-react"></i>
+                        </div>
+                        <div className="media-body">
+                            <h5>Easy management UI</h5>
+                            <p className="text-muted">
+                                Manage your comments with a few clicks on any device.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-6 col-xl-4">
+                    <div className="media">
+                        <div className="iconbox iconmedium rounded-circle text-dark mr-4">
+                            <i className="fab fa-github"></i>
+                        </div>
+                        <div className="media-body">
+                            <h5>Open source</h5>
+                            <p className="text-muted">
+                                The code is up on Github. Fork it and deploy your own instance.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-6 col-xl-4">
+                    <div className="media">
+                        <div className="iconbox iconmedium rounded-circle text-salmon mr-4">
+                            <i className="fas fa-burn"></i>
+                        </div>
+                        <div className="media-body">
+                            <h5>Support</h5>
+                            <p className="text-muted">
+                                Sorry, that's up to you.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+          
         </section>
       </main>
     </>
   );
 }
+
+
