@@ -13,10 +13,10 @@ export default function Footer(props:any) {
                 <div className="col-6 col-md">
                     <h5 className="mb-4 text-white">Features</h5>
                     <ul className="list-unstyled text-small">
-                        <li><a className="text-muted">Self hosted on Azure</a></li>
-                        <li><a className="text-muted">100% Serverless</a></li>
-                        <li><a className="text-muted">No tracking</a></li>
-                        <li><a className="text-muted">Jamstack proof</a></li>
+                        <li><span className="text-muted">Self hosted on Azure</span></li>
+                        <li><span className="text-muted">100% Serverless</span></li>
+                        <li><span className="text-muted">No tracking</span></li>
+                        <li><span className="text-muted">Jamstack proof</span></li>
                     </ul>
                 </div>
                 <div className="col-6 col-md">
@@ -31,9 +31,9 @@ export default function Footer(props:any) {
                 <div className="col-6 col-md">
                     <h5 className="mb-4 text-white">About</h5>
                     <ul className="list-unstyled text-small">
-                        <li><a className="text-muted" href="#">Team</a></li>
-                        <li><a className="text-muted" href="#">Contribute</a></li>
-                        <li><a className="text-muted" href="#">Donate</a></li>
+                        <li><a className="text-muted" href="https://github.com/alanta/bolt-comments">Team</a></li>
+                        <li><a className="text-muted" href="https://github.com/alanta/bolt-comments">Contribute</a></li>
+                        <li><a className="text-muted" href="https://github.com/alanta/bolt-comments">Donate</a></li>
                         
                     </ul>
                 </div>

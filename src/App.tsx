@@ -2,8 +2,7 @@ import React, { useEffect } from 'react';
 import { 
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route  
 } from "react-router-dom";
 import Footer from 'components/footer'
 import Navbar from 'components/navbar'
