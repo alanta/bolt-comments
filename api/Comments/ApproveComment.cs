@@ -21,6 +21,11 @@ namespace Bolt.Comments
             [Table("Comments")] CloudTable commentsTable,
             ILogger log)
         {
+            if( !req.IsAuthorized(Authorization.Roles.Authenticated ))
+            {
+                return new UnauthorizedResult();
+            }
+
             if (string.IsNullOrWhiteSpace(id))
             {
                 return new BadRequestResult();

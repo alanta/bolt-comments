@@ -21,8 +21,6 @@ namespace Bolt.Comments
             [Table("Comments")] CloudTable table,
             ILogger log)
         {
-
-
             var query =  new TableQuery<Comment>().Where(
                 TableQuery.GenerateFilterConditionForBool( nameof(Comment.Approved), QueryComparisons.Equal, true )
                 .AddPathQuery(path))
@@ -45,6 +43,11 @@ namespace Bolt.Comments
             [Table("Comments")] CloudTable table,
             ILogger log)
         {
+            if( !req.IsAuthorized(Authorization.Roles.Authenticated ))
+            {
+                return new UnauthorizedResult();
+            }
+
             TableQuery<Comment> query = new TableQuery<Comment>().Where(
                  TableQuery.GenerateFilterConditionForBool( nameof(Comment.Approved), QueryComparisons.Equal, false )
                  .AddPathQuery(path))

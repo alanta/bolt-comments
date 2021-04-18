@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
-namespace Bolt.Comments
+namespace Bolt.Comments.Contracts
 {
     public class NewComment
     {

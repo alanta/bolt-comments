@@ -18,7 +18,7 @@ namespace Bolt.Comments
             [Table("Comments")] IAsyncCollector<Comment> table,
             ILogger log)
         {
-            var data = await req.GetBodyAsync<NewComment>();
+            var data = await req.GetBodyAsync<Contracts.NewComment>();
             
             if( !data.IsValid ){
                return data.ValidationError();
