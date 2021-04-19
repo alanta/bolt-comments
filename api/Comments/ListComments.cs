@@ -24,6 +24,7 @@ namespace Bolt.Comments
             var query =  new TableQuery<Comment>().Where(
                 TableQuery.GenerateFilterConditionForBool( nameof(Comment.Approved), QueryComparisons.Equal, true )
                 .AddPathQuery(path))
+                .OrderBy(nameof(Comment.PartitionKey))
                 .Take(250);
            
             var comments = await table.QueryAsync<Comment>(query);
@@ -33,7 +34,7 @@ namespace Bolt.Comments
                 return new NoContentResult();
             }
 
-            return new OkObjectResult(comments.Select( c => Contracts.Mapper.Map( c )).ToArray());
+            return new OkObjectResult(comments.OrderBy( c => c.PartitionKey ).ThenBy( c => c.Posted ).Select( c => Contracts.Mapper.Map( c )).ToArray());
         }
 
         [FunctionName(nameof(ListCommentsForApproval))]
@@ -51,6 +52,7 @@ namespace Bolt.Comments
             TableQuery<Comment> query = new TableQuery<Comment>().Where(
                  TableQuery.GenerateFilterConditionForBool( nameof(Comment.Approved), QueryComparisons.Equal, false )
                  .AddPathQuery(path))
+                 .OrderBy(nameof(Comment.Posted))
                  .Take(250);
            
             var comments = await table.QueryAsync<Comment>(query);
@@ -60,7 +62,7 @@ namespace Bolt.Comments
                 return new NoContentResult();
             }
 
-            return new OkObjectResult(comments.Select( c => Contracts.Mapper.Map( c )).ToArray());
+            return new OkObjectResult(comments.OrderBy( c => c.Posted ).Select( c => Contracts.Mapper.Map( c )).ToArray());
         }
 
         private static string AddPathQuery( this string filter, string? path )

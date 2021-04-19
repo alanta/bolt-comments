@@ -30,10 +30,39 @@ namespace Bolt.Comments
                 Posted = DateTime.UtcNow,
                 Content = data.Value.Content,
                 Email = data.Value.Email,
-                Name = data.Value.Name
+                Name = data.Value.Name,
+                InReplyTo = data.Value.InReplyTo
             };
             
             await table.AddAsync( newComment );
+
+            return new AcceptedResult();
+        }
+
+        [FunctionName(nameof(ImportComment))]
+        public static async Task<IActionResult> ImportComment(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "comment/import")] HttpRequest req,
+            [Table("Comments")] IAsyncCollector<Comment> table,
+            ILogger log)
+        {
+            var data = await req.GetBodyAsync<Contracts.ImportComment[]>();
+           
+            if( !data.IsValid ){
+               return data.ValidationError();
+            }
+
+            foreach( var item in data.Value )
+            {
+                var newComment = new Comment{
+                    RowKey = item.Id ?? Guid.NewGuid().ToString("N"),
+                    PartitionKey = HttpUtility.UrlEncode( item.Path ),
+                    Posted = item.Posted ?? DateTime.UtcNow,
+                    Content = item.Content,
+                    Email = item.Email,
+                    Name = item.Name
+                };
+                await table.AddAsync( newComment );
+            }
 
             return new AcceptedResult();
         }

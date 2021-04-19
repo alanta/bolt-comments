@@ -10,8 +10,12 @@ export const useCommentsService = () => {
 
   useEffect(() => {
     fetch('/api/comment/approved')
-      .then(response => response.text())
-      .then(response => resolve(!response || response.length === 0) ? [] : JSON.parse(response) )
+    .then(async (response) => {
+      if( response.ok ){
+        var data = await response.text();
+        return Promise.resolve( !!!data || data.length === 0 ? [] : JSON.parse(data)  )
+      }
+    })
       .then(data => setResult({ status: 'loaded', payload: data }))
       .catch(error => setResult({ status: 'error', error }));
   }, []);
@@ -26,8 +30,12 @@ export const useApprovalsService = () => {
 
   useEffect(() => {
     fetch('/api/comment/approvals')
-      .then(response => response.text())
-      .then(response => resolve(!response || response.length === 0) ? [] : JSON.parse(response) )
+      .then(async (response) => {
+        if( response.ok ){
+          var data = await response.text();
+          return Promise.resolve( !!!data || data.length === 0 ? [] : JSON.parse(data)  )
+        }
+      })
       .then(data => setResult({ status: 'loaded', payload: data }))
       .catch(error => setResult({ status: 'error', error }));
   }, []);
