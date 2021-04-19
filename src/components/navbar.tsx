@@ -1,11 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuthentication } from "services/auth.service";
-import { useApprovalsService } from "services/comments.service";
+import { Service } from "services/service";
+import { Comment } from 'models/comment';
 
-export default function Navbar(props:any) {
+export interface NavbarProps {
+    service: Service<Comment[]>
+}
 
-    const service = useApprovalsService(); // todo : don't fetch number of pending approvals if not authenticated
+export default function Navbar(props:NavbarProps) {
+
+    const { service } = props; // todo : don't fetch number of pending approvals if not authenticated
     const auth = useAuthentication();
 
     return<>

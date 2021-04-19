@@ -13,7 +13,6 @@ namespace Bolt.Comments
     [StorageAccount("DataStorage")]
     public static class ApproveComment
     {
-        // TODO : Authentication !!!
         [FunctionName(nameof(ApproveComment))]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "comment/approve/{id}")] HttpRequest req,

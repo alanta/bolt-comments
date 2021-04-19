@@ -1,14 +1,33 @@
 import Header, { UISize } from "components/header";
 import React, { useEffect } from "react";
 import moment from 'moment'
-import { useApprovalsService } from 'services/comments.service';
+import useUpdateCommentService from 'services/comments.service';
+import { Service } from "services/service";
+import { Comment } from 'models/comment';
 
-const Approvals : React.FC<{}> = () =>  {
+export interface ApprovalsProps 
+{
+  approvalsService: Service<Comment[]>;
+  removeItem: (id: string) => void;
+}
 
-  const service = useApprovalsService();
+const Approvals : React.FC<ApprovalsProps> = (props:ApprovalsProps) =>  {
+
+  const { approvalsService, removeItem } = {...props};
+  const updateService = useUpdateCommentService();
   useEffect(() => {
       document.title = "Approvals - Bolt Comments"
   }, []);
+
+  const approveComment = (event: React.MouseEvent<HTMLElement,MouseEvent>, id : string) => {
+    event.preventDefault();
+    updateService.approveComment(id).then(() =>{ removeItem(id) })
+  };
+
+  const deleteComment = (event: React.MouseEvent<HTMLElement,MouseEvent>, id : string) => {
+    event.preventDefault();
+    updateService.approveComment(id).then(() =>{ removeItem(id) })
+  };
 
   return (
     <>
@@ -19,14 +38,17 @@ const Approvals : React.FC<{}> = () =>  {
     </Header>
     <section className="pt-4 pb-5 aos-init aos-animate">
         <div className="container">
-        {service.status === 'loading' && <div className="alert alert-purple" role="alert"><i className="fas fa-spinner"></i> Loading...</div>}
-    {service.status === 'error' && (
+        {approvalsService.status === 'loading' && <div className="alert alert-purple" role="alert"><i className="fas fa-spinner"></i> Loading...</div>}
+    {approvalsService.status === 'error' && (
         <div className="alert alert-danger" role="alert"><i className="fas fa-times"></i> Error, the backend moved to the dark side.</div>
       )}
-    {service.status === 'loaded' && (!service.payload || service.payload.length === 0 ) &&
+    {approvalsService.status === 'loaded' && (!approvalsService.payload || approvalsService.payload.length === 0 ) &&
         <div className="alert alert-success" role="alert"><i className="fas fa-check"></i> No pending approvals found.</div> }
-    {service.status === 'loaded' && (service.payload && service.payload.length > 0 ) &&
-      
+    {approvalsService.status === 'loaded' && (approvalsService.payload && approvalsService.payload.length > 0 ) &&
+        <>
+            {updateService.service.status === 'loading' && <div>Sending...</div>}
+            {updateService.service.status === 'loaded' && <div>Done</div>}
+            {updateService.service.status === 'error' && <div>Oops</div>}
         <table className="table table-hover">
           <thead className="thead-dark">
             <tr>
@@ -38,17 +60,20 @@ const Approvals : React.FC<{}> = () =>  {
             </tr>
           </thead>
           <tbody>
-          {service.payload.map(comment => (
+          {approvalsService.payload.map(comment => (
             <tr key={comment.id}>
               <th scope="row">{moment(comment.posted).calendar()}</th>
               <td>{comment.name}</td>
               <td>{comment.email}</td>
               <td>{comment.content}</td>
-              <td><button type="button" className="btn btn-sm btn-success btn-round" title="Approve"><i className="fas fa-check"></i></button> <button type="button" className="btn btn-sm btn-danger btn-round"  title="Delete"><i className="far fa-trash-alt"></i></button></td>
+              <td>
+                <button type="button" className="btn btn-sm btn-success btn-round" title="Approve" onClick={(e) => approveComment(e, comment.id)}><i className="fas fa-check"></i></button> 
+                <button type="button" className="btn btn-sm btn-danger btn-round"  title="Delete" onClick={(e) => deleteComment(e, comment.id)}><i className="far fa-trash-alt"></i></button></td>
             </tr>
           ))}
           </tbody>
         </table>
+        </>
         }
         </div>
       </section>

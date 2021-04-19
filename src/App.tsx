@@ -14,6 +14,7 @@ import './App.scss';
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Login from 'features/account/login';
+import { useApprovalsService } from 'services/comments.service';
 AOS.init();
 
 function App() {
@@ -29,17 +30,19 @@ function App() {
     AOS.refresh();
   }, []);
 
+  const { service, removeItem } = useApprovalsService();
+
   return (
     <Router>
     
     <div className="App">
-    <Navbar />
+    <Navbar service={service} />
     <Switch>
       <Route exact path="/">
         <Home />
       </Route>
       <Route path="/approvals">
-        <Approvals />
+        <Approvals approvalsService={service} removeItem={removeItem} />
       </Route>
       <Route path="/comments">
         <Comments />

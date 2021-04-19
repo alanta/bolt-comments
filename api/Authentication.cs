@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Http;
 
 namespace Bolt.Comments
 {
-
     public static class Authorization
     {
         public class ClientPrincipal
