@@ -1,4 +1,4 @@
-﻿# Bolt Comments
+﻿# ⚡ Bolt Comments
 
 Simple blog comments with Azure Functions
 
@@ -7,7 +7,25 @@ Simple blog comments with Azure Functions
 This project provides easy self-hosted comments for your blog on Azure Functions, including a management app running in an Azure Static Web Apps (SWA).
 The backing store is Azure Storage Tables.
 
+![screenshot](https://github.com/alanta/bolt-comments/raw/master/src/docs/bolt-screenhost.png "Bolt Admin UI")
+
 ## Deploy your own instance
+
+_TODO_
+
+## Integrate with your site
+
+_TODO_
+
+### API based integration
+
+_TODO_
+
+### Integrate with your SSG
+
+_TODO_
+
+### Use WebHooks to update your site
 
 _TODO_
 
