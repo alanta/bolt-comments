@@ -21,7 +21,7 @@ export default function Home(props: any) {
         <section className="pt-4 pb-5" data-aos="fade-up">
           <h3 className="h5 mb-4 font-weight-bold">Manage your own comments</h3>
           <p className="mb-5">
-            Bolt Comments is a simple service with a nice UI to manage the blog comments for your Jamstack site. This is an Azure Static Web App, but you can host your site any any platform you like.
+            Bolt Comments is a simple service with a nice UI to manage the blog comments for your Jamstack site. This is an Azure Static Web App, but you can host your site any platform you like.
           </p>
 
           <div className="container pt-5 pb-5 mt-4 aos-init aos-animate" data-aos="fade-up">
