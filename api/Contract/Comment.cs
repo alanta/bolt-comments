@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Web;
 
 namespace Bolt.Comments.Contracts
@@ -18,6 +19,7 @@ namespace Bolt.Comments.Contracts
         public string Name {get; set;} = "";
         public string Email {get; set;} = "";
         public string Content {get;set;} = "";
+        public string Avatar {get;set;} = "";
         public DateTime Posted { get; set;} = DateTime.MinValue;
         public bool Approved { get; set; }
         
@@ -25,6 +27,15 @@ namespace Bolt.Comments.Contracts
 
     public static class Mapper
     {
+        private static MD5 hasher = MD5.Create();
+
+        private static string UniqueHash(Bolt.Comment comment)
+        {
+            var id = string.IsNullOrWhiteSpace(comment.Email) ? comment.Name : comment.Email;
+            var hash = hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes(id.ToLower()));
+            return string.Concat(hash.Select(b => b.ToString("x2")));
+        }
+
         public static Contracts.CommentsPerKey[] Map( IReadOnlyCollection<Bolt.Comment> data)
         {
             if( data == null )
@@ -48,7 +59,8 @@ namespace Bolt.Comments.Contracts
                 Approved = data.Approved,
                 Content = data.Content,
                 Email = data.Email ?? "",
-                Posted = data.Posted
+                Posted = data.Posted,
+                Avatar = $"https://www.gravatar.com/avatar/{UniqueHash(data)}?d=identicon"
             };
         }
     }

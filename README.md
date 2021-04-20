@@ -72,3 +72,7 @@ The UI is a plain vanilla React app, created with [create-react-app](https://fac
 * `yarn test` Launches the test runner in the interactive watch mode.
 * `yarn build` Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
+
+## Credits
+
+The UI is based on Bootstrap and the [Anchor UI Kit](https://wowthemesnet.github.io/Anchor-Bootstrap-UI-Kit/index.html) from Wowthemes.

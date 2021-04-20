@@ -50,29 +50,31 @@ const Approvals : React.FC<ApprovalsProps> = (props:ApprovalsProps) =>  {
             {updateService.service.status === 'loaded' && <div>Done</div>}
             {updateService.service.status === 'error' && <div>Oops</div>}
         <table className="table table-hover">
-          <thead className="thead-dark">
+          <thead className="bg-primary text-white">
             <tr>
-              <th scope="col">Received</th>
-              <th scope="col">Name</th>
-              <th scope="col">Email</th>
-              <th scope="col">Comment</th>
-              <th scope="col">Actions</th>
+              <th scope="col" className="w-10">From</th>
+              <th scope="col" className="w-auto">Comment</th>
+              <th scope="col" className="w-10">Actions</th>
             </tr>
           </thead>
           <tbody>
           {approvalsService.payload.map(commentsByKey => (
             <>
-            <tr key={commentsByKey.key}>
-              <th colSpan={5}>{commentsByKey.key}</th>
+            <tr key={commentsByKey.key} className="bg-purple text-white">
+              <th colSpan={5}><i className="fas fa-feather mr-4"></i> {commentsByKey.key}</th>
             </tr>
             {commentsByKey.comments.map( comment => (  
             <tr key={comment.id}>
-              <th scope="row">{moment(comment.posted).calendar()}</th>
-              <td>{comment.name}</td>
-              <td>{comment.email}</td>
-              <td>{comment.content}</td>
               <td>
-                <button type="button" className="btn btn-sm btn-success btn-round" title="Approve" onClick={(e) => approveComment(e, comment)}><i className="fas fa-check"></i></button> 
+              <div className="row justify-content-center mb-2">
+                <img className="rounded-circle shadow" src={comment.avatar} width={70} alt={comment.name} />
+              </div>
+              <div className="text-center">{comment.name}<br/>
+                {comment.email}</div>
+              </td>
+              <td><h6 className="mb-2 font-weight-bold"><i className="far fa-calendar-alt"></i> {moment(comment.posted).calendar()}</h6><div>{comment.content}</div></td>
+              <td className="text-nowrap">
+                <button type="button" className="btn btn-sm btn-success btn-round mr-1" title="Approve" onClick={(e) => approveComment(e, comment)}><i className="fas fa-check"></i></button> 
                 <button type="button" className="btn btn-sm btn-danger btn-round"  title="Delete" onClick={(e) => deleteComment(e, comment)}><i className="far fa-trash-alt"></i></button></td>
             </tr>
             ))}

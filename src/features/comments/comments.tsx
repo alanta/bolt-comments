@@ -30,29 +30,30 @@ const Comments : React.FC<{}> = () =>  {
     {service.status === 'loaded' && (service.payload && service.payload.length > 0 ) &&
 
         <table className="table table-hover">
-          <thead className="thead-dark">
-            <tr>
-              <th scope="col">Received</th>
-              <th scope="col">Name</th>
-              <th scope="col">Email</th>
-              <th scope="col">Comment</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
+        <thead className="bg-primary text-white">
+          <tr>
+            <th scope="col" className="w-10">From</th>
+            <th scope="col" className="w-auto">Comment</th>
+            <th scope="col" className="w-10">Actions</th>
+          </tr>
+        </thead>
           <tbody>
           {service.payload.map(commentsByKey => (
             <>
-            <tr key={commentsByKey.key}>
-              <th colSpan={5}>{commentsByKey.key}</th>
+            <tr key={commentsByKey.key} className="bg-purple text-white">
+              <th colSpan={5}><i className="fas fa-feather mr-4"></i> {commentsByKey.key}</th>
             </tr>
             {commentsByKey.comments.map( comment => (  
             <tr key={comment.id}>
-              <th scope="row">{moment(comment.posted).calendar()}</th>
-              <td>{comment.name}</td>
-              <td>{comment.email}</td>
-              <td>{comment.content}</td>
               <td>
-              <td><button type="button" className="btn btn-sm btn-outline-primary btn-round" title="Reject"><i className="fas fa-times"></i></button></td></td>
+              <div className="row justify-content-center mb-2">
+                <img className="rounded-circle shadow" src={comment.avatar} width={70} alt={comment.name} />
+              </div>
+              <div className="text-center">{comment.name}<br/>
+                {comment.email}</div>
+              </td>
+              <td><h6 className="mb-2 font-weight-bold"><i className="far fa-calendar-alt"></i> {moment(comment.posted).calendar()}</h6><div>{comment.content}</div></td>
+              <td className="text-nowrap"><button type="button" className="btn btn-sm btn-outline-primary btn-round" title="Reject"><i className="fas fa-times"></i></button></td>
             </tr>
             ))}
             </>
