@@ -1,8 +1,16 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 
 namespace Bolt.Comments.Contracts
 {
+    public class CommentsPerKey
+    {
+        public string Key {get; set;}
+        public Comment[] Comments {get; set;}
+    }
+
     public class Comment 
     {
         public string Id {get; set;} = "";
@@ -17,6 +25,19 @@ namespace Bolt.Comments.Contracts
 
     public static class Mapper
     {
+        public static Contracts.CommentsPerKey[] Map( IReadOnlyCollection<Bolt.Comment> data)
+        {
+            if( data == null )
+            {
+                return Array.Empty<Contracts.CommentsPerKey>();
+            }
+
+            return data.Select( c => Map( c )).ToLookup( c => c.Key ).Select( set => new CommentsPerKey{
+                Key = set.Key,
+                Comments = set.OrderByDescending(c => c.Posted).ToArray()
+            } ).ToArray();
+        }
+
         public static Contracts.Comment Map( Bolt.Comment data )
         {
             return new Contracts.Comment
@@ -26,7 +47,7 @@ namespace Bolt.Comments.Contracts
                 Name = data.Name,
                 Approved = data.Approved,
                 Content = data.Content,
-                Email = data.Email,
+                Email = data.Email ?? "",
                 Posted = data.Posted
             };
         }

@@ -40,14 +40,22 @@ const Comments : React.FC<{}> = () =>  {
             </tr>
           </thead>
           <tbody>
-          {service.payload.map(comment => (
+          {service.payload.map(commentsByKey => (
+            <>
+            <tr key={commentsByKey.key}>
+              <th colSpan={5}>{commentsByKey.key}</th>
+            </tr>
+            {commentsByKey.comments.map( comment => (  
             <tr key={comment.id}>
               <th scope="row">{moment(comment.posted).calendar()}</th>
               <td>{comment.name}</td>
               <td>{comment.email}</td>
               <td>{comment.content}</td>
-              <td><button type="button" className="btn btn-sm btn-outline-primary btn-round" title="Reject"><i className="fas fa-times"></i></button></td>
+              <td>
+              <td><button type="button" className="btn btn-sm btn-outline-primary btn-round" title="Reject"><i className="fas fa-times"></i></button></td></td>
             </tr>
+            ))}
+            </>
           ))}
           </tbody>
         </table>

@@ -3,12 +3,12 @@ import React, { useEffect } from "react";
 import moment from 'moment'
 import useUpdateCommentService from 'services/comments.service';
 import { Service } from "services/service";
-import { Comment } from 'models/comment';
+import { Comment, CommentsByKey } from 'models/comment';
 
 export interface ApprovalsProps 
 {
-  approvalsService: Service<Comment[]>;
-  removeItem: (id: string) => void;
+  approvalsService: Service<CommentsByKey[]>;
+  removeItem: (comment: Comment) => void;
 }
 
 const Approvals : React.FC<ApprovalsProps> = (props:ApprovalsProps) =>  {
@@ -19,14 +19,14 @@ const Approvals : React.FC<ApprovalsProps> = (props:ApprovalsProps) =>  {
       document.title = "Approvals - Bolt Comments"
   }, []);
 
-  const approveComment = (event: React.MouseEvent<HTMLElement,MouseEvent>, id : string) => {
+  const approveComment = (event: React.MouseEvent<HTMLElement,MouseEvent>, comment : Comment) => {
     event.preventDefault();
-    updateService.approveComment(id).then(() =>{ removeItem(id) })
+    updateService.approveComment(comment.id).then(() =>{ removeItem(comment) })
   };
 
-  const deleteComment = (event: React.MouseEvent<HTMLElement,MouseEvent>, id : string) => {
+  const deleteComment = (event: React.MouseEvent<HTMLElement,MouseEvent>, comment : Comment) => {
     event.preventDefault();
-    updateService.approveComment(id).then(() =>{ removeItem(id) })
+    updateService.deleteComment(comment.id).then(() =>{ removeItem(comment) })
   };
 
   return (
@@ -60,16 +60,23 @@ const Approvals : React.FC<ApprovalsProps> = (props:ApprovalsProps) =>  {
             </tr>
           </thead>
           <tbody>
-          {approvalsService.payload.map(comment => (
+          {approvalsService.payload.map(commentsByKey => (
+            <>
+            <tr key={commentsByKey.key}>
+              <th colSpan={5}>{commentsByKey.key}</th>
+            </tr>
+            {commentsByKey.comments.map( comment => (  
             <tr key={comment.id}>
               <th scope="row">{moment(comment.posted).calendar()}</th>
               <td>{comment.name}</td>
               <td>{comment.email}</td>
               <td>{comment.content}</td>
               <td>
-                <button type="button" className="btn btn-sm btn-success btn-round" title="Approve" onClick={(e) => approveComment(e, comment.id)}><i className="fas fa-check"></i></button> 
-                <button type="button" className="btn btn-sm btn-danger btn-round"  title="Delete" onClick={(e) => deleteComment(e, comment.id)}><i className="far fa-trash-alt"></i></button></td>
+                <button type="button" className="btn btn-sm btn-success btn-round" title="Approve" onClick={(e) => approveComment(e, comment)}><i className="fas fa-check"></i></button> 
+                <button type="button" className="btn btn-sm btn-danger btn-round"  title="Delete" onClick={(e) => deleteComment(e, comment)}><i className="far fa-trash-alt"></i></button></td>
             </tr>
+            ))}
+            </>
           ))}
           </tbody>
         </table>

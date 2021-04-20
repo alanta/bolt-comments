@@ -7,3 +7,8 @@ export interface Comment{
     posted: Date;
     approved: boolean;
 }
+
+export interface CommentsByKey{
+    key: string;
+    comments: Comment[]
+}

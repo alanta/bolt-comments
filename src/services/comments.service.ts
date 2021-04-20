@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Service } from 'services/service';
-import { Comment } from 'models/comment';
+import { Comment, CommentsByKey } from 'models/comment';
 
 export const useCommentsService = () => {
-  const [result, setResult] = useState<Service<Comment[]>>({
+  const [result, setResult] = useState<Service<CommentsByKey[]>>({
     status: 'loading'
   });
 
@@ -23,7 +23,7 @@ export const useCommentsService = () => {
 };
 
 export const useApprovalsService = () => {
-  const [result, setResult] = useState<Service<Comment[]>>({
+  const [result, setResult] = useState<Service<CommentsByKey[]>>({
     status: 'loading'
   });
 
@@ -39,12 +39,22 @@ export const useApprovalsService = () => {
       .catch(error => setResult({ status: 'error', error }));
   }, []);
 
-  const removeItem = (id:string) =>{
+  const removeItem = (comment:Comment) =>{
     if(result.status === 'loaded'){
-      
-      result.payload.forEach( (item, index) => {
-        if(item.id === id) result.payload.splice(index,1);
-      });
+      result.payload.forEach( (item, index) => 
+      {
+        if( item.key === comment.key )
+        {
+          // remove the item
+          item.comments.forEach( (c, index2 ) => {
+            if(c.id === comment.id) item.comments.splice(index2,1);
+          })
+          // remove empty groups
+          if( item.comments.length === 0){
+            result.payload.splice(index, 1);
+          }
+        }
+      })
 
       setResult(prevStatus => ({
         ...prevStatus, payload: result.payload

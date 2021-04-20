@@ -2,10 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useAuthentication } from "services/auth.service";
 import { Service } from "services/service";
-import { Comment } from 'models/comment';
+import { CommentsByKey } from 'models/comment';
 
 export interface NavbarProps {
-    service: Service<Comment[]>
+    service: Service<CommentsByKey[]>
 }
 
 export default function Navbar(props:NavbarProps) {
@@ -27,7 +27,7 @@ export default function Navbar(props:NavbarProps) {
                 <Link className="nav-link" to="/comments">Comments</Link>
 			</li>
             <li className="nav-item">
-                <Link className="nav-link" to="/approvals">Approvals {service.status === 'loaded' && service.payload.length > 0 && <span className="badge badge-info ml-2">{service.payload.length}</span>}</Link>
+                <Link className="nav-link" to="/approvals">Approvals {service.status === 'loaded' && service.payload.length > 0 && <span className="badge badge-info ml-2">{service.payload.reduce((sum: number, b: CommentsByKey) => sum + b.comments.length, 0)}</span>}</Link>
 			</li>
 		</ul>
         }
