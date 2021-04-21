@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAuthentication } from "services/auth.service";
+import { useAuth } from "services/auth.service";
 import { Service } from "services/service";
 import { CommentsByKey } from 'models/comment';
 
@@ -11,7 +11,7 @@ export interface NavbarProps {
 export default function Navbar(props:NavbarProps) {
 
     const { service } = props; // todo : don't fetch number of pending approvals if not authenticated
-    const auth = useAuthentication();
+    const auth = useAuth();
 
     return<>
 <nav className="topnav navbar navbar-expand-lg navbar-dark bg-primary fixed-top">

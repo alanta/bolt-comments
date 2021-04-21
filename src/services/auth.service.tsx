@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext, createContext } from 'react';
 import { Service } from 'services/service';
 
 export class UserInfo{
@@ -12,6 +12,16 @@ export interface clientPrincipal
   userRoles?: string[];
   identityProvider:string;
   userDetails:string;
+}
+
+const authContext = createContext<Service<UserInfo>>({status: 'loading'});
+
+export const useAuth = () => {
+  return useContext(authContext);
+};
+
+interface ProvideAuthProps{
+  children?: React.ReactNode
 }
 
 export const useAuthentication = () => {
@@ -35,3 +45,10 @@ export const useAuthentication = () => {
 
   return result;
 };
+
+
+export const ProvideAuth: React.FC<ProvideAuthProps> = (props) => {
+  const auth = useAuthentication();
+  
+  return (<authContext.Provider value={auth}>{props.children}</authContext.Provider>);
+}

@@ -15,6 +15,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import Login from 'features/account/login';
 import { useApprovalsService } from 'services/comments.service';
+import { ProvideAuth } from 'services/auth.service';
 AOS.init();
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
     <Router>
     
     <div className="App">
+      <ProvideAuth>
     <Navbar service={service} />
     <Switch>
       <Route exact path="/">
@@ -52,6 +54,7 @@ function App() {
       </Route>
     </Switch>
     <Footer />
+      </ProvideAuth>
     </div>
     
    </Router>
