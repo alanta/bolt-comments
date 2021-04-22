@@ -12,15 +12,28 @@ using System.Linq;
 namespace Bolt.Comments
 {
     [StorageAccount("DataStorage")]
-    public static class ListComments
+    public class ListComments
     {
+        private readonly Authorization _authorization;
+
+        public ListComments(Authorization authorization)
+        {
+            _authorization = authorization ?? throw new ArgumentNullException(nameof(authorization));
+        }
+
+
         [FunctionName(nameof(ListComments))]
-        public static async Task<IActionResult> ListApprovedComments(
+        public async Task<IActionResult> ListApprovedComments(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "comment/approved/{*path}")] HttpRequest req,
             [FromQuery] string? path,
             [Table("Comments")] CloudTable table,
             ILogger log)
         {
+            if( !await _authorization.IsAuthorized(req, Authorization.Roles.Authenticated, Authorization.Roles.ListComments ))
+            {
+                return new UnauthorizedResult();
+            }
+
             var query =  new TableQuery<Comment>().Where(
                 TableQuery.GenerateFilterConditionForBool( nameof(Comment.Approved), QueryComparisons.Equal, true )
                 .AddPathQuery(path))
@@ -38,13 +51,13 @@ namespace Bolt.Comments
         }
 
         [FunctionName(nameof(ListCommentsForApproval))]
-        public static async Task<IActionResult> ListCommentsForApproval(
+        public async Task<IActionResult> ListCommentsForApproval(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "comment/approvals/{*path}")] HttpRequest req,
             [FromQuery] string? path,
             [Table("Comments")] CloudTable table,
             ILogger log)
         {
-            if( !req.IsAuthorized(Authorization.Roles.Authenticated ))
+            if( !await _authorization.IsAuthorized(req, Authorization.Roles.Authenticated ))
             {
                 return new UnauthorizedResult();
             }
@@ -64,8 +77,11 @@ namespace Bolt.Comments
 
             return new OkObjectResult(Contracts.Mapper.Map(comments));
         }
+    }
 
-        private static string AddPathQuery( this string filter, string? path )
+    public static class TableQueryHelper
+    {
+        public static string AddPathQuery( this string filter, string? path )
         {
             if (string.IsNullOrEmpty(path))
             {

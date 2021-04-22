@@ -12,17 +12,23 @@ using System.Linq;
 namespace Bolt.Comments
 {
     [StorageAccount("DataStorage")]
-    public static class DeleteComment
+    public class DeleteComment
     {
-        // TODO : Authentication !!!
+        private readonly Authorization _authorization;
+
+        public DeleteComment(Authorization authorization)
+        {
+            _authorization = authorization ?? throw new ArgumentNullException(nameof(authorization));
+        }
+
         [FunctionName(nameof(DeleteComment))]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "comment/{id}")] HttpRequest req,
             [FromQuery] string id,
             [Table("Comments")] CloudTable outputTable,
             ILogger log)
         {
-            if( !req.IsAuthorized(Authorization.Roles.Authenticated))
+            if( !await _authorization.IsAuthorized(req, Authorization.Roles.Approve, Authorization.Roles.Admin))
             {
                 return new UnauthorizedResult();
             }

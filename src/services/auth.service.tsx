@@ -2,8 +2,23 @@ import React, { useEffect, useState, useContext, createContext } from 'react';
 import { Service } from 'services/service';
 
 export class UserInfo{
+
+    constructor(authenticated:boolean, clientPrincipal?:clientPrincipal) 
+    {
+        this.authenticated = authenticated;
+        this.clientPrincipal = clientPrincipal;  
+    }
+
     authenticated: boolean = false;
     clientPrincipal?: clientPrincipal;
+    isInRole = (role:string) : boolean => 
+    {
+      return this.authenticated && (this.clientPrincipal?.userRoles?.includes(role) ?? false);
+    }
+    isInAnyRole = (roles?:string[]) : boolean => 
+    {
+      return this.authenticated && (roles?.length === 0  || (this.clientPrincipal?.userRoles?.some(r => roles?.includes(r)) ?? false ));
+    }
 }
 
 export interface clientPrincipal
@@ -35,10 +50,10 @@ export const useAuthentication = () => {
       .then(response => setResult(
         { 
           status: 'loaded', 
-          payload: { 
-            authenticated : !!response?.clientPrincipal,
-            clientPrincipal: response.clientPrincipal
-          }
+          payload: new UserInfo(
+            !!response?.clientPrincipal,
+            response.clientPrincipal
+          )
         }))
       .catch(error => setResult({ status: 'error', error }));
   }, []);

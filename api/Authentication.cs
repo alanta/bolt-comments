@@ -4,12 +4,21 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
+using Bolt.Comments.Domain;
 using Microsoft.AspNetCore.Http;
 
 namespace Bolt.Comments
 {
-    public static class Authorization
+    public class Authorization
     {
+        private readonly SettingsService _settings;
+
+        public Authorization(SettingsService settings)
+        {
+            _settings = settings;
+        }
+
         public class ClientPrincipal
         {
             public string IdentityProvider { get; set; }
@@ -21,11 +30,14 @@ namespace Bolt.Comments
         public static class Roles{
             public const string Anonymous = "anonymous";
             public const string Authenticated = "authenticated";
-
-            public static string[] Approve { get; internal set; }
+            public static string Approve = "approve";
+            public static string AddComment = "add-comment";
+            public static string Admin = "admin";
+            public static string ImportComment = "import-comment";
+            public static string ListComments = "list-comments";
         }
 
-        public static ClaimsPrincipal Parse(HttpRequest req)
+        public static ClaimsPrincipal Parse(HttpRequest req, ApiKey[] apiKeys)
         {
             var principal = new ClientPrincipal();
 
@@ -35,6 +47,18 @@ namespace Bolt.Comments
                 var decoded = Convert.FromBase64String(data);
                 var json = Encoding.ASCII.GetString(decoded);
                 principal = JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            }
+            else if (req.Headers.TryGetValue("x-bolt-api-key", out var apiKeyHeader))
+            {
+                var apikey = apiKeys.FirstOrDefault( k => string.Equals(k.Key, apiKeyHeader.FirstOrDefault()));
+                
+                if( apikey != null )
+                {
+                    principal.IdentityProvider="apikey";
+                    principal.UserDetails=apikey.Name;
+                    principal.UserId=apikey.UserId;
+                    principal.UserRoles=apikey.Roles;
+                }
             }
 
             principal.UserRoles = principal.UserRoles?.Except(new string[] { "anonymous" }, StringComparer.OrdinalIgnoreCase) ?? Array.Empty<string>();
@@ -52,9 +76,9 @@ namespace Bolt.Comments
             return new ClaimsPrincipal(identity);
         }
 
-        public static bool IsAuthorized(this HttpRequest req, params string[] allowedRoles)
+        public async Task<bool> IsAuthorized(HttpRequest req, params string[] allowedRoles)
         {
-            var principal = Parse(req);
+            var principal = Parse(req, await _settings.GetApiKeys());
 
             return allowedRoles?.Any(r => principal.IsInRole(r)) ?? false;
         }

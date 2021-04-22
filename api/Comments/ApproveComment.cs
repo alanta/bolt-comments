@@ -11,16 +11,23 @@ using System.Linq;
 namespace Bolt.Comments
 {
     [StorageAccount("DataStorage")]
-    public static class ApproveComment
+    public class ApproveComment
     {
+        private readonly Authorization _authorization;
+
+        public ApproveComment(Authorization authorization)
+        {
+            _authorization = authorization ?? throw new ArgumentNullException(nameof(authorization));
+        }
+
         [FunctionName(nameof(ApproveComment))]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "comment/approve/{id}")] HttpRequest req,
             [FromQuery] string id,
             [Table("Comments")] CloudTable commentsTable,
             ILogger log)
         {
-            if( !req.IsAuthorized(Authorization.Roles.Authenticated ))
+            if( !await _authorization.IsAuthorized(req, Authorization.Roles.Approve, Authorization.Roles.Admin ))
             {
                 return new UnauthorizedResult();
             }

@@ -21,6 +21,10 @@ namespace Bolt
         {
             var body = new HttpResponseBody<T>();
             var bodyString = await request.ReadAsStringAsync();
+            if( bodyString?.Length == 0 ){
+                body.IsValid = false;
+                body.ValidationResults = new List<ValidationResult>(){ new ValidationResult("Request was empty")};
+            }
             body.Value = JsonConvert.DeserializeObject<T>(bodyString);
 
             var results = new List<ValidationResult>();

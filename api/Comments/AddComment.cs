@@ -10,14 +10,26 @@ using System.Web;
 namespace Bolt.Comments
 {
     [StorageAccount("DataStorage")]
-    public static class AddComment
+    public class AddComment
     {
+        private readonly Authorization _authorization;
+
+        public AddComment(Authorization authorization)
+        {
+            _authorization = authorization;
+        }
+
         [FunctionName(nameof(AddComment))]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "comment")] HttpRequest req,
             [Table("Comments")] IAsyncCollector<Comment> table,
             ILogger log)
         {
+            if( !await _authorization.IsAuthorized(req, Authorization.Roles.AddComment, Authorization.Roles.Admin ))
+            {
+                return new UnauthorizedResult();
+            }
+
             var data = await req.GetBodyAsync<Contracts.NewComment>();
             
             if( !data.IsValid ){
@@ -40,11 +52,16 @@ namespace Bolt.Comments
         }
 
         [FunctionName(nameof(ImportComment))]
-        public static async Task<IActionResult> ImportComment(
+        public async Task<IActionResult> ImportComment(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "comment/import")] HttpRequest req,
             [Table("Comments")] IAsyncCollector<Comment> table,
             ILogger log)
         {
+            if( !await _authorization.IsAuthorized(req, Authorization.Roles.ImportComment, Authorization.Roles.Admin ))
+            {
+                return new UnauthorizedResult();
+            }
+
             var data = await req.GetBodyAsync<Contracts.ImportComment[]>();
            
             if( !data.IsValid ){
