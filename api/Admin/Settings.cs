@@ -5,6 +5,8 @@ namespace Bolt.Comments
     public class Settings
     {
         [Required, MinLength(10)]
-        public string ApiKey { get; set; } = "";
+        public string? ApiKey { get; set; }
+        public string? WebHookNewComment {get; set;}
+        public string? WebHookCommentPublished { get; set; }
     }
 }

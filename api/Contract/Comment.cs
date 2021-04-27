@@ -22,7 +22,11 @@ namespace Bolt.Comments.Contracts
         public string Avatar {get;set;} = "";
         public DateTime Posted { get; set;} = DateTime.MinValue;
         public bool Approved { get; set; }
-        
+    }
+
+    public class CommentEvent : Comment
+    {
+        public string Event {get; set;} = "";
     }
 
     public static class Mapper
@@ -51,7 +55,20 @@ namespace Bolt.Comments.Contracts
 
         public static Contracts.Comment Map( Bolt.Comment data )
         {
-            return new Contracts.Comment
+            return MapInternal<Contracts.Comment>(data);
+        }
+
+        public static Contracts.CommentEvent MapEvent( Bolt.Comment data, string eventName )
+        {
+            var dto = MapInternal<Contracts.CommentEvent>(data);
+            dto.Event = eventName;
+            return dto;
+        }
+
+        private static TComment MapInternal<TComment>( Bolt.Comment data )
+            where TComment : Contracts.Comment, new()
+        {
+            return new TComment
             {
                 Id = data.RowKey,
                 Key = HttpUtility.UrlDecode(data.PartitionKey),

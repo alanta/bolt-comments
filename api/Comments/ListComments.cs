@@ -26,7 +26,7 @@ namespace Bolt.Comments
         public async Task<IActionResult> ListApprovedComments(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "comment/approved/{*path}")] HttpRequest req,
             [FromQuery] string? path,
-            [Table("Comments")] CloudTable table,
+            [Table(Tables.Comments)] CloudTable table,
             ILogger log)
         {
             if( !await _authorization.IsAuthorized(req, Authorization.Roles.Authenticated, Authorization.Roles.ListComments ))
@@ -54,7 +54,7 @@ namespace Bolt.Comments
         public async Task<IActionResult> ListCommentsForApproval(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "comment/approvals/{*path}")] HttpRequest req,
             [FromQuery] string? path,
-            [Table("Comments")] CloudTable table,
+            [Table(Tables.Comments)] CloudTable table,
             ILogger log)
         {
             if( !await _authorization.IsAuthorized(req, Authorization.Roles.Authenticated ))

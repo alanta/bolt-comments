@@ -24,7 +24,7 @@ namespace Bolt.Comments
         [FunctionName(nameof(UpdateSettings))]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "settings")] HttpRequest req,
-            [Table("Settings")] CloudTable table,
+            [Table(Tables.Settings)] CloudTable table,
             ILogger log)
         {
             if (!await _authorization.IsAuthorized(req, Authorization.Roles.Admin))
@@ -40,7 +40,22 @@ namespace Bolt.Comments
 
             var settings = await _settings.GetSettings(table);
 
-            settings.ApiKey = data.Value.ApiKey;
+            if( !string.IsNullOrEmpty(data.Value.ApiKey) )
+            {
+                settings.ApiKey = data.Value.ApiKey;
+            }
+
+            if( data.Value.WebHookNewComment != null )
+            {
+                // can be empty to disable webhook
+                settings.WebHookNewComment = data.Value.WebHookNewComment;
+            }
+
+            if( data.Value.WebHookCommentPublished != null )
+            {
+                // can be empty to disable webhook
+                settings.WebHookCommentPublished = data.Value.WebHookCommentPublished;
+            }
 
             await _settings.Save(table, settings);
 

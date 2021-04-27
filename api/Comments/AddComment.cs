@@ -22,7 +22,8 @@ namespace Bolt.Comments
         [FunctionName(nameof(AddComment))]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "comment")] HttpRequest req,
-            [Table("Comments")] IAsyncCollector<Comment> table,
+            [Table(Tables.Comments)] IAsyncCollector<Comment> table,
+            [Queue(Queues.CommentAdded)] ICollector<Contracts.CommentEvent> queue,
             ILogger log)
         {
             if( !await _authorization.IsAuthorized(req, Authorization.Roles.AddComment, Authorization.Roles.Admin ))
@@ -48,13 +49,15 @@ namespace Bolt.Comments
             
             await table.AddAsync( newComment );
 
+            queue.Add(Contracts.Mapper.MapEvent(newComment, "Added"));
+
             return new AcceptedResult();
         }
 
         [FunctionName(nameof(ImportComment))]
         public async Task<IActionResult> ImportComment(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "comment/import")] HttpRequest req,
-            [Table("Comments")] IAsyncCollector<Comment> table,
+            [Table(Tables.Comments)] IAsyncCollector<Comment> table,
             ILogger log)
         {
             if( !await _authorization.IsAuthorized(req, Authorization.Roles.ImportComment, Authorization.Roles.Admin ))

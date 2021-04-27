@@ -1,4 +1,6 @@
 
 export interface Settings {
-    apiKey: string;
+    apiKey?: string;
+    webHookNewComment?: string;
+    webHookCommentPublished?: string;
 }

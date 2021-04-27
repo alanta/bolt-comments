@@ -24,7 +24,7 @@ namespace Bolt.Comments
         [FunctionName(nameof(GetSettings))]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "settings")] HttpRequest req,
-            [Table("Settings")] CloudTable table,
+            [Table(Tables.Settings)] CloudTable table,
             ILogger log)
         {
             if (!await _authorization.IsAuthorized(req, Authorization.Roles.Admin))
@@ -34,7 +34,7 @@ namespace Bolt.Comments
 
             var settings = await _settings.GetSettings(table);
 
-            return new OkObjectResult(new { ApiKey = settings.ApiKey });
+            return new OkObjectResult(new { ApiKey = settings.ApiKey, WebHookNewComment = settings.WebHookNewComment, WebHookCommentPublished = settings.WebHookCommentPublished });
         }
     }
 }

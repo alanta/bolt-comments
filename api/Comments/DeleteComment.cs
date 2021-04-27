@@ -5,7 +5,6 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Web;
 using Microsoft.Azure.Cosmos.Table;
 using System.Linq;
 
@@ -25,7 +24,8 @@ namespace Bolt.Comments
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "comment/{id}")] HttpRequest req,
             [FromQuery] string id,
-            [Table("Comments")] CloudTable outputTable,
+            [Table(Tables.Comments)] CloudTable outputTable,
+            [Queue(Queues.CommentPublished)] ICollector<Contracts.CommentEvent> queue,
             ILogger log)
         {
             if( !await _authorization.IsAuthorized(req, Authorization.Roles.Approve, Authorization.Roles.Admin))
@@ -53,8 +53,16 @@ namespace Bolt.Comments
 
             var deleteOp = TableOperation.Delete(comment);
             var result = await outputTable.ExecuteAsync(deleteOp);
+
+            bool succeeded = result.HttpStatusCode < 300;
+
+            if( succeeded && comment.Approved )
+            {
+                comment.Approved = false;
+                queue.Add(Contracts.Mapper.MapEvent(comment, "Deleted"));
+            }
             
-            return result.HttpStatusCode < 300 ? new OkResult() : new StatusCodeResult(result.HttpStatusCode);
+            return succeeded ? new OkResult() : new StatusCodeResult(result.HttpStatusCode);
         }
 
     }

@@ -15,7 +15,9 @@ export const useSettingsService = () => {
         return Promise.resolve( !!!data || data.length === 0 ? [] : JSON.parse(data)  )
       }
     })
-      .then(data => setResult({ status: 'loaded', payload: data }))
+      .then(data => {
+        setResult({ status: 'loaded', payload: data });
+      })
       .catch(error => setResult({ status: 'error', error }));
   }, []);
 
