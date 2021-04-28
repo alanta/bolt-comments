@@ -24,6 +24,13 @@ namespace Bolt.Comments
             this.settings = settings;
         }
 
+        [FunctionName(nameof(Timer))]
+        public async Task Timer([TimerTrigger("0 */2 * * * *")]TimerInfo myTimer, ILogger log)
+        {
+            log.LogInformation("Timer triggered");
+        }
+
+        /*
         [FunctionName(nameof(NotifyNewComment))]
         [ExponentialBackoffRetry(10, "00:00:20", "00:01:00")]
         public async Task NotifyNewComment(
@@ -47,6 +54,8 @@ namespace Bolt.Comments
 
             await InvokeWebHook(url, message, "comment approved", ct, log);
         }
+
+        */
 
         private async Task InvokeWebHook(string url, Contracts.CommentEvent message, string eventName, CancellationToken ct, ILogger log)
         {
