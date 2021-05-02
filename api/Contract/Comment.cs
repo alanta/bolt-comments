@@ -8,8 +8,8 @@ namespace Bolt.Comments.Contracts
 {
     public class CommentsPerKey
     {
-        public string Key {get; set;}
-        public Comment[] Comments {get; set;}
+        public string Key {get; set;} = "";
+        public Comment[] Comments {get; set;} = Array.Empty<Comment>();
     }
 
     public class Comment 

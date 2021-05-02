@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using System;
 
 namespace Bolt
 {
@@ -12,7 +13,7 @@ namespace Bolt
     {
         public bool IsValid { get; set; }
         public T Value { get; set; }
-        public IEnumerable<ValidationResult> ValidationResults { get; set; }
+        public IEnumerable<ValidationResult> ValidationResults { get; set; } = Array.Empty<ValidationResult>();
     }
 
     public static class HttpRequestExtensions
