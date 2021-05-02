@@ -12,6 +12,7 @@ namespace Bolt.Comments
         {
             builder.Services.AddScoped<SettingsService>();
             builder.Services.AddScoped<Authorization>();
+            builder.Services.AddScoped<INotifyComment, NotifyComment>();
         }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Cosmos.Table;
 using System.Linq;
+using System.Threading;
 
 namespace Bolt.Comments
 {
@@ -14,10 +15,12 @@ namespace Bolt.Comments
     public class DeleteComment
     {
         private readonly Authorization _authorization;
+        private readonly INotifyComment _notifier;
 
-        public DeleteComment(Authorization authorization)
+        public DeleteComment(Authorization authorization, INotifyComment notifyComment)
         {
             _authorization = authorization ?? throw new ArgumentNullException(nameof(authorization));
+            _notifier = notifyComment ?? throw new ArgumentNullException(nameof(notifyComment));
         }
 
         [FunctionName(nameof(DeleteComment))]
@@ -25,7 +28,7 @@ namespace Bolt.Comments
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "comment/{id}")] HttpRequest req,
             [FromQuery] string id,
             [Table(Tables.Comments)] CloudTable outputTable,
-            [Queue(Queues.CommentPublished)] ICollector<Contracts.CommentEvent> queue,
+            CancellationToken ct,
             ILogger log)
         {
             if( !await _authorization.IsAuthorized(req, Authorization.Roles.Approve, Authorization.Roles.Admin))
@@ -59,7 +62,7 @@ namespace Bolt.Comments
             if( succeeded && comment.Approved )
             {
                 comment.Approved = false;
-                queue.Add(Contracts.Mapper.MapEvent(comment, "Deleted"));
+                await _notifier.NotifyCommentPublished(Contracts.Mapper.MapEvent(comment, "Deleted"), log, ct);
             }
             
             return succeeded ? new OkResult() : new StatusCodeResult(result.HttpStatusCode);

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Cosmos.Table;
 using System.Linq;
+using System.Threading;
 
 namespace Bolt.Comments
 {
@@ -14,10 +15,12 @@ namespace Bolt.Comments
     public class ApproveRejectComment
     {
         private readonly Authorization _authorization;
+        private readonly INotifyComment _notifier;
 
-        public ApproveRejectComment(Authorization authorization)
+        public ApproveRejectComment(Authorization authorization, INotifyComment notifyComment)
         {
             _authorization = authorization ?? throw new ArgumentNullException(nameof(authorization));
+            _notifier = notifyComment ?? throw new ArgumentNullException(nameof(notifyComment));
         }
 
         [FunctionName(nameof(ApproveComment))]
@@ -25,7 +28,7 @@ namespace Bolt.Comments
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "comment/approve/{id}")] HttpRequest req,
             [FromQuery] string id,
             [Table(Tables.Comments)] CloudTable commentsTable,
-            [Queue(Queues.CommentPublished)] ICollector<Contracts.CommentEvent> queue,
+            CancellationToken ct,
             ILogger log)
         {
             if( !await _authorization.IsAuthorized(req, Authorization.Roles.Approve, Authorization.Roles.Admin ))
@@ -61,7 +64,7 @@ namespace Bolt.Comments
             var updateOp = TableOperation.Replace(comment);
             await commentsTable.ExecuteAsync(updateOp);
 
-            queue.Add(Contracts.Mapper.MapEvent(comment, "Approved"));
+            await _notifier.NotifyCommentPublished(Contracts.Mapper.MapEvent(comment, "Approved"), log, ct);
 
             return new OkResult();
         }
@@ -71,7 +74,7 @@ namespace Bolt.Comments
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "comment/reject/{id}")] HttpRequest req,
             [FromQuery] string id,
             [Table(Tables.Comments)] CloudTable commentsTable,
-            [Queue(Queues.CommentPublished)] ICollector<Contracts.CommentEvent> queue,
+            CancellationToken ct,
             ILogger log)
         {
             if( !await _authorization.IsAuthorized(req, Authorization.Roles.Approve, Authorization.Roles.Admin ))
@@ -107,7 +110,7 @@ namespace Bolt.Comments
             var updateOp = TableOperation.Replace(comment);
             await commentsTable.ExecuteAsync(updateOp);
 
-            queue.Add(Contracts.Mapper.MapEvent(comment, "Rejected"));
+            await _notifier.NotifyCommentPublished(Contracts.Mapper.MapEvent(comment, "Rejected"), log, ct);
 
             return new OkResult();
         }

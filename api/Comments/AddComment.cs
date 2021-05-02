@@ -6,6 +6,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Web;
+using System.Threading;
 
 namespace Bolt.Comments
 {
@@ -13,17 +14,19 @@ namespace Bolt.Comments
     public class AddComment
     {
         private readonly Authorization _authorization;
+        private readonly INotifyComment _notifier;
 
-        public AddComment(Authorization authorization)
+        public AddComment(Authorization authorization, INotifyComment notifyComment)
         {
             _authorization = authorization;
+            _notifier = notifyComment;
         }
 
         [FunctionName(nameof(AddComment))]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "comment")] HttpRequest req,
             [Table(Tables.Comments)] IAsyncCollector<Comment> table,
-            [Queue(Queues.CommentAdded)] ICollector<Contracts.CommentEvent> queue,
+            CancellationToken ct,
             ILogger log)
         {
             if( !await _authorization.IsAuthorized(req, Authorization.Roles.AddComment, Authorization.Roles.Admin ))
@@ -49,7 +52,7 @@ namespace Bolt.Comments
             
             await table.AddAsync( newComment );
 
-            queue.Add(Contracts.Mapper.MapEvent(newComment, "Added"));
+            await _notifier.NotifyNewComment(Contracts.Mapper.MapEvent(newComment, "Added"), log, ct);
 
             return new AcceptedResult();
         }
