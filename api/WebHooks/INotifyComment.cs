@@ -1,9 +1,9 @@
+using Bolt.Comments.Contract;
+using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
-using Bolt.Comments.Contracts;
-using Microsoft.Extensions.Logging;
 
-namespace Bolt.Comments
+namespace Bolt.Comments.WebHooks
 {
     public interface INotifyComment
     {

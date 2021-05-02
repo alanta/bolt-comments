@@ -1,4 +1,5 @@
 using Bolt.Comments.Domain;
+using Bolt.Comments.WebHooks;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 

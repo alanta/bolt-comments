@@ -1,3 +1,5 @@
+using Bolt.Comments.Contract;
+using Bolt.Comments.WebHooks;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -64,7 +66,7 @@ namespace Bolt.Comments
             var updateOp = TableOperation.Replace(comment);
             await commentsTable.ExecuteAsync(updateOp);
 
-            await _notifier.NotifyCommentPublished(Contracts.Mapper.MapEvent(comment, "Approved"), log, ct);
+            await _notifier.NotifyCommentPublished(Mapper.MapEvent(comment, "Approved"), log, ct);
 
             return new OkResult();
         }
@@ -110,7 +112,7 @@ namespace Bolt.Comments
             var updateOp = TableOperation.Replace(comment);
             await commentsTable.ExecuteAsync(updateOp);
 
-            await _notifier.NotifyCommentPublished(Contracts.Mapper.MapEvent(comment, "Rejected"), log, ct);
+            await _notifier.NotifyCommentPublished(Mapper.MapEvent(comment, "Rejected"), log, ct);
 
             return new OkResult();
         }

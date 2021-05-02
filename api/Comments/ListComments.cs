@@ -1,3 +1,4 @@
+using Bolt.Comments.Contract;
 using System;
 using System.Web;
 using System.Threading.Tasks;
@@ -47,7 +48,7 @@ namespace Bolt.Comments
                 return new NoContentResult();
             }
 
-            return new OkObjectResult(Contracts.Mapper.Map(comments));
+            return new OkObjectResult(Mapper.Map(comments));
         }
 
         [FunctionName(nameof(ListCommentsForApproval))]
@@ -75,7 +76,7 @@ namespace Bolt.Comments
                 return new NoContentResult();
             }
 
-            return new OkObjectResult(Contracts.Mapper.Map(comments));
+            return new OkObjectResult(Mapper.Map(comments));
         }
     }
 

@@ -1,14 +1,14 @@
+using Bolt.Comments.Contract;
+using Bolt.Comments.Domain;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Bolt.Comments.Domain;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
 
-namespace Bolt.Comments
+namespace Bolt.Comments.WebHooks
 {
 
     public class NotifyComment : INotifyComment
@@ -26,7 +26,7 @@ namespace Bolt.Comments
         }
 
         public async Task NotifyNewComment(
-            Contracts.CommentEvent message,
+            CommentEvent message,
             ILogger log,
             CancellationToken ct)
         {
@@ -43,7 +43,7 @@ namespace Bolt.Comments
         }
 
         public async Task NotifyCommentPublished(
-            Contracts.CommentEvent message,
+            CommentEvent message,
             ILogger log,
             CancellationToken ct)
         {
@@ -59,7 +59,7 @@ namespace Bolt.Comments
             }
         }
 
-        private async Task InvokeWebHook(string url, Contracts.CommentEvent message, string eventName, CancellationToken ct, ILogger log)
+        private async Task InvokeWebHook(string url, CommentEvent message, string eventName, CancellationToken ct, ILogger log)
         {
             if (string.IsNullOrWhiteSpace(url))
             {

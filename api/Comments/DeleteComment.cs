@@ -1,3 +1,5 @@
+using Bolt.Comments.Contract;
+using Bolt.Comments.WebHooks;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -62,7 +64,7 @@ namespace Bolt.Comments
             if( succeeded && comment.Approved )
             {
                 comment.Approved = false;
-                await _notifier.NotifyCommentPublished(Contracts.Mapper.MapEvent(comment, "Deleted"), log, ct);
+                await _notifier.NotifyCommentPublished(Mapper.MapEvent(comment, "Deleted"), log, ct);
             }
             
             return succeeded ? new OkResult() : new StatusCodeResult(result.HttpStatusCode);

@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Bolt.Comments.Contracts
+namespace Bolt.Comments.Contract
 {
     public class NewComment
     {

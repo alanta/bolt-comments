@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Bolt.Comments
+namespace Bolt.Comments.Contract
 {
     public class Settings
     {

@@ -1,13 +1,13 @@
-using System.Threading.Tasks;
+using Bolt.Comments.Domain;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Azure.Cosmos.Table;
-using Bolt.Comments.Domain;
+using System.Threading.Tasks;
 
-namespace Bolt.Comments
+namespace Bolt.Comments.Admin
 {
     [StorageAccount("DataStorage")]
     public class GetSettings

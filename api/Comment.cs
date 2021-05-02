@@ -1,7 +1,7 @@
-using System;
 using Microsoft.Azure.Cosmos.Table;
+using System;
 
-namespace Bolt
+namespace Bolt.Comments
 {
     public class Comment : TableEntity
     {

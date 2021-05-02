@@ -1,3 +1,5 @@
+using Bolt.Comments.Contract;
+using Bolt.Comments.WebHooks;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -34,7 +36,7 @@ namespace Bolt.Comments
                 return new UnauthorizedResult();
             }
 
-            var data = await req.GetBodyAsync<Contracts.NewComment>();
+            var data = req.IsForm() ? await req.GetFormAsync<NewComment>() : await req.GetBodyAsync<NewComment>();
             
             if( !data.IsValid ){
                return data.ValidationError();
@@ -52,7 +54,7 @@ namespace Bolt.Comments
             
             await table.AddAsync( newComment );
 
-            await _notifier.NotifyNewComment(Contracts.Mapper.MapEvent(newComment, "Added"), log, ct);
+            await _notifier.NotifyNewComment(Mapper.MapEvent(newComment, "Added"), log, ct);
 
             return new AcceptedResult();
         }
@@ -68,7 +70,7 @@ namespace Bolt.Comments
                 return new UnauthorizedResult();
             }
 
-            var data = await req.GetBodyAsync<Contracts.ImportComment[]>();
+            var data = await req.GetBodyAsync<ImportComment[]>();
            
             if( !data.IsValid ){
                return data.ValidationError();

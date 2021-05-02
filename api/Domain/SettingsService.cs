@@ -1,3 +1,4 @@
+using Bolt.Comments.Admin;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

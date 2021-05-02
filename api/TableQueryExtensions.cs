@@ -1,8 +1,8 @@
+using Microsoft.Azure.Cosmos.Table;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Azure.Cosmos.Table;
 
-namespace Bolt
+namespace Bolt.Comments
 {
     public static class TableQueryExtensions
     {

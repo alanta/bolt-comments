@@ -1,6 +1,6 @@
 using Microsoft.Azure.Cosmos.Table;
 
-namespace Bolt.Comments
+namespace Bolt.Comments.Admin
 {
     public class SettingsEntity : TableEntity
     {
