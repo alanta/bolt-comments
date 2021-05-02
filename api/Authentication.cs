@@ -48,16 +48,16 @@ namespace Bolt.Comments
                 var json = Encoding.ASCII.GetString(decoded);
                 principal = JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
-            else if (req.Headers.TryGetValue("x-bolt-api-key", out var apiKeyHeader))
+            else if (TryGetApiKey(req, out var apiKeyValue))
             {
-                var apikey = apiKeys.FirstOrDefault( k => string.Equals(k.Key, apiKeyHeader.FirstOrDefault()));
+                var apiKey = apiKeys.FirstOrDefault( k => string.Equals(k.Key, apiKeyValue));
                 
-                if( apikey != null )
+                if( apiKey != null )
                 {
-                    principal.IdentityProvider="apikey";
-                    principal.UserDetails=apikey.Name;
-                    principal.UserId=apikey.UserId;
-                    principal.UserRoles=apikey.Roles;
+                    principal.IdentityProvider="API Key";
+                    principal.UserDetails=apiKey.Name;
+                    principal.UserId=apiKey.UserId;
+                    principal.UserRoles=apiKey.Roles;
                 }
             }
 
@@ -81,6 +81,24 @@ namespace Bolt.Comments
             var principal = Parse(req, await _settings.GetApiKeys());
 
             return allowedRoles?.Any(r => principal.IsInRole(r)) ?? false;
+        }
+        
+        private static bool TryGetApiKey(HttpRequest request, out string apiKey)
+        {
+            if( request.Headers.TryGetValue("x-bolt-api-key", out var apiKeyHeader) )
+            {
+                apiKey = apiKeyHeader.FirstOrDefault() ?? "";
+                return true;
+            }
+
+            if (request.Query.TryGetValue("bolt-key", out var queryValue))
+            {
+                apiKey = queryValue.FirstOrDefault() ?? "";
+                return true;
+            }
+
+            apiKey = "";
+            return false;
         }
     }
 }
