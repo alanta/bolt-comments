@@ -19,9 +19,9 @@ namespace Bolt.Comments
 
     public static class HttpRequestExtensions
     {
-        private static readonly HashSet<string> formContentTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase){ "application/x-www-form-urlencoded", "multipart/form-data" };
+        private static readonly string[] formContentTypes = new[]{ "application/x-www-form-urlencoded", "multipart/form-data" };
 
-        public static bool IsForm(this HttpRequest request) => formContentTypes.Contains(request.ContentType);
+        public static bool IsForm(this HttpRequest request) => formContentTypes.Any( contentType =>  request.ContentType.StartsWith(contentType, StringComparison.OrdinalIgnoreCase));
         
         /// <summary>
         /// Attempts to bind a form collection to a model of type <typeparamref name="T" />.
