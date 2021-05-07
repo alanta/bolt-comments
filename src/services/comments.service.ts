@@ -19,7 +19,30 @@ export const useCommentsService = () => {
       .catch(error => setResult({ status: 'error', error }));
   }, []);
 
-  return result;
+  const removeItem = (comment:Comment) =>{
+    if(result.status === 'loaded'){
+      result.payload.forEach( (item, index) => 
+      {
+        if( item.key === comment.key )
+        {
+          // remove the item
+          item.comments.forEach( (c, index2 ) => {
+            if(c.id === comment.id) item.comments.splice(index2,1);
+          })
+          // remove empty groups
+          if( item.comments.length === 0){
+            result.payload.splice(index, 1);
+          }
+        }
+      })
+
+      setResult(prevStatus => ({
+        ...prevStatus, payload: result.payload
+      }));
+    }
+  }
+
+  return { service : result, removeItem };
 };
 
 export const useApprovalsService = () => {
@@ -98,6 +121,34 @@ const useUpdateCommentService = () => {
     });
   };
 
+  const rejectComment = (id: string) => {
+    setService({ status: 'loading' });
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json; charset=utf-8');
+
+    return new Promise((resolve, reject) => {
+      fetch('/api/comment/reject/'+id, {
+        method: 'POST',
+        headers
+      })
+      .then(async (response) => {
+        if( response.ok ){
+          var data = await response.text();
+          return Promise.resolve( !!!data || data.length === 0 ? [] : JSON.parse(data)  )
+        }
+      })
+        .then(response => {
+          setService({ status: 'loaded', payload: response });
+          resolve(response);
+        })
+        .catch(error => {
+          setService({ status: 'error', error });
+          reject(error);
+        });
+    });
+  };
+
   const deleteComment = (id: string) => {
     setService({ status: 'loading' });
 
@@ -129,7 +180,8 @@ const useUpdateCommentService = () => {
   return {
     service,
     approveComment,
-    deleteComment
+    deleteComment,
+    rejectComment
   };
 };
 

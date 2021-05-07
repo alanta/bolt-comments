@@ -1,16 +1,23 @@
 import Header, { UISize } from "components/header";
 import React, { useEffect } from "react";
 import moment from 'moment'
-import { useCommentsService } from 'services/comments.service';
-
+import useUpdateCommentService, { useCommentsService } from 'services/comments.service';
+import { Comment } from 'models/comment';
+import { useAuth } from "services/auth.service";
 
 const Comments : React.FC<{}> = () =>  {
-
-  const service = useCommentsService();
+  const {service, removeItem} = useCommentsService();
+  const updateService = useUpdateCommentService();
+  const auth = useAuth();
   
   useEffect(() => {
     document.title = "Comments - Bolt Comments"
 }, []);
+
+const rejectComment = (event: React.MouseEvent<HTMLElement,MouseEvent>, comment : Comment) => {
+  event.preventDefault();
+  updateService.rejectComment(comment.id).then(() =>{ removeItem(comment) })
+};
 
   return (
     <>
@@ -52,8 +59,10 @@ const Comments : React.FC<{}> = () =>  {
               <div className="text-center">{comment.name}<br/>
                 {comment.email}</div>
               </td>
-              <td><h6 className="mb-2 font-weight-bold"><i className="far fa-calendar-alt"></i> {moment(comment.posted).calendar()}</h6><div>{comment.content}</div></td>
-              <td className="text-nowrap"><button type="button" className="btn btn-sm btn-outline-primary btn-round" title="Reject"><i className="fas fa-times"></i></button></td>
+              <td><h6 className="mb-2 font-weight-bold"><i className="far fa-calendar-alt"></i> {moment(comment.posted).calendar()}</h6><div className="comment-content">{comment.content}</div></td>
+              <td className="text-nowrap">
+              { auth.status === 'loaded' && auth.payload.isInAnyRole(['admin','approve']) && <button type="button" className="btn btn-sm btn-outline-primary btn-round" title="Reject" onClick={(e) => rejectComment(e, comment)}><i className="fas fa-times"></i></button> }
+              </td>
             </tr>
             ))}
             </>
