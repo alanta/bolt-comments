@@ -21,7 +21,7 @@ namespace Bolt.Comments
     {
         private static readonly string[] formContentTypes = new[]{ "application/x-www-form-urlencoded", "multipart/form-data" };
 
-        public static bool IsForm(this HttpRequest request) => formContentTypes.Any( contentType =>  request.ContentType.StartsWith(contentType, StringComparison.OrdinalIgnoreCase));
+        public static bool IsForm(this HttpRequest request) => formContentTypes.Any( contentType =>  request.ContentType?.StartsWith(contentType, StringComparison.OrdinalIgnoreCase) ?? false);
         
         /// <summary>
         /// Attempts to bind a form collection to a model of type <typeparamref name="T" />.
