@@ -1,0 +1,117 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "type": "string",
+            "metadata":{
+                "description": "The instance name of the static web app"
+            }
+        },
+        "storageAccount": {
+            "defaultValue": "",
+            "type": "String",
+             "metadata":{
+                "description": "The name of the storage account. Defaults the name of the static web app"
+            }
+        },
+        "sku": {
+            "defaultValue": "Free",
+            "type": "string"
+        },
+        "skucode": {
+            "defaultValue": "Free",
+            "type": "string"
+        },
+        "repositoryOwner": {
+            "type": "string",
+            "metadata":{
+                "description": "Your github account name"
+            }
+        },
+        "repositoryName": {
+            "type": "string",
+            "metadata":{
+                "description": "The name of the new repository"
+            }
+        },
+        "repositoryIsPrivate": {
+            "defaultValue": false,
+            "type": "bool",
+            "metadata":{
+                "description": "Set to true to make the new repository private"
+            }
+        }
+    },
+    "variables": {
+        // use name of the static app as the name for the storage account by default
+        "storageAccountName": "[if( greater(length(parameters('storageAccount')),0), parameters('storageAccount'), parameters('name'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2021-02-01",
+            "name": "[variables('storageAccountName')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": true,
+                "allowSharedKeyAccess": true,
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "keyType": "Account",
+                            "enabled": true
+                        },
+                        "blob": {
+                            "keyType": "Account",
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            }
+        },
+        {
+            "apiVersion": "2020-12-01",
+            "name": "[parameters('name')]",
+            "type": "Microsoft.Web/staticSites",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                 "templateProperties": {
+                    "templateRepositoryUrl": "https://github.com/alanta/bolt-comments",
+                    "owner": "[parameters('repositoryOwner')]",
+                    "repositoryName": "[parameters('repositoryName')]",
+                    "description": "Bolt Comments",
+                    "isPrivate": "[parameters('repositoryIsPrivate')]"
+                },
+                "buildProperties": {
+                    "appLocation": "/",
+                    "apiLocation": "/api",
+                    "outputLocation": "/build"
+                }
+            },
+            "sku": {
+                "Tier": "[parameters('sku')]",
+                "Name": "[parameters('skuCode')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+            ]
+
+        }
+    ]
+}

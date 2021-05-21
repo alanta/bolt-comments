@@ -72,6 +72,8 @@ For now, the easiest way is to fork this repo and deploy it from VS Code.
 
 Your Bolt Comments instance is now ready to use 🎉.
 
+Or.... [Deploy straight to Azure](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Falanta%2Fbolt-comments%2Fmaain%2Fdeploy%2Fazuredeploy.json)
+
 ## Integrate with your site
 
 There are two ways to integrate with your site. You can load the comments directly from the API or while regenerating your site using a Static Site Generator.
