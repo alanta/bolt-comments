@@ -17,11 +17,13 @@ namespace Bolt.Comments
     {
         private readonly Authorization _authorization;
         private readonly INotifyComment _notifier;
+        private readonly Mapper _mapper;
 
-        public AddComment(Authorization authorization, INotifyComment notifyComment)
+        public AddComment(Authorization authorization, INotifyComment notifyComment, Mapper mapper)
         {
             _authorization = authorization;
             _notifier = notifyComment;
+            _mapper = mapper;
         }
 
         [FunctionName(nameof(AddComment))]
@@ -46,7 +48,7 @@ namespace Bolt.Comments
                 RowKey = Guid.NewGuid().ToString("N"),
                 PartitionKey = HttpUtility.UrlEncode( data.Value.Path ),
                 Posted = DateTime.UtcNow,
-                Content = data.Value.Content,
+                Content = _mapper.PurgeContent(data.Value.Content),
                 Email = data.Value.Email,
                 Name = data.Value.Name,
                 InReplyTo = data.Value.InReplyTo
@@ -54,7 +56,7 @@ namespace Bolt.Comments
             
             await table.AddAsync( newComment );
 
-            await _notifier.NotifyNewComment(Mapper.MapEvent(newComment, "Added"), log, ct);
+            await _notifier.NotifyNewComment(_mapper.MapEvent(newComment, "Added"), log, ct);
 
             return new AcceptedResult();
         }
@@ -82,7 +84,7 @@ namespace Bolt.Comments
                     RowKey = item.Id ?? Guid.NewGuid().ToString("N"),
                     PartitionKey = HttpUtility.UrlEncode( item.Path ),
                     Posted = item.Posted ?? DateTime.UtcNow,
-                    Content = item.Content,
+                    Content = HtmlToMarkdown.Convert(item.Content),
                     Email = item.Email,
                     Name = item.Name
                 };

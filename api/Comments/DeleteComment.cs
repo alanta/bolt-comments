@@ -18,11 +18,13 @@ namespace Bolt.Comments
     {
         private readonly Authorization _authorization;
         private readonly INotifyComment _notifier;
+        private readonly Mapper _mapper;
 
-        public DeleteComment(Authorization authorization, INotifyComment notifyComment)
+        public DeleteComment(Authorization authorization, INotifyComment notifyComment, Mapper mapper)
         {
             _authorization = authorization ?? throw new ArgumentNullException(nameof(authorization));
             _notifier = notifyComment ?? throw new ArgumentNullException(nameof(notifyComment));
+            _mapper = mapper;
         }
 
         [FunctionName(nameof(DeleteComment))]
@@ -64,7 +66,7 @@ namespace Bolt.Comments
             if( succeeded && comment.Approved )
             {
                 comment.Approved = false;
-                await _notifier.NotifyCommentPublished(Mapper.MapEvent(comment, "Deleted"), log, ct);
+                await _notifier.NotifyCommentPublished(_mapper.MapEvent(comment, "Deleted"), log, ct);
             }
             
             return succeeded ? new OkResult() : new StatusCodeResult(result.HttpStatusCode);

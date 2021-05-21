@@ -18,11 +18,13 @@ namespace Bolt.Comments
     {
         private readonly Authorization _authorization;
         private readonly INotifyComment _notifier;
+        private readonly Mapper _mapper;
 
-        public ApproveRejectComment(Authorization authorization, INotifyComment notifyComment)
+        public ApproveRejectComment(Authorization authorization, INotifyComment notifyComment, Mapper mapper)
         {
             _authorization = authorization ?? throw new ArgumentNullException(nameof(authorization));
             _notifier = notifyComment ?? throw new ArgumentNullException(nameof(notifyComment));
+            _mapper = mapper;
         }
 
         [FunctionName(nameof(ApproveComment))]
@@ -66,7 +68,7 @@ namespace Bolt.Comments
             var updateOp = TableOperation.Replace(comment);
             await commentsTable.ExecuteAsync(updateOp);
 
-            await _notifier.NotifyCommentPublished(Mapper.MapEvent(comment, "Approved"), log, ct);
+            await _notifier.NotifyCommentPublished(_mapper.MapEvent(comment, "Approved"), log, ct);
 
             return new OkResult();
         }
@@ -112,7 +114,7 @@ namespace Bolt.Comments
             var updateOp = TableOperation.Replace(comment);
             await commentsTable.ExecuteAsync(updateOp);
 
-            await _notifier.NotifyCommentPublished(Mapper.MapEvent(comment, "Rejected"), log, ct);
+            await _notifier.NotifyCommentPublished(_mapper.MapEvent(comment, "Rejected"), log, ct);
 
             return new OkResult();
         }

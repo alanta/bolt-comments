@@ -72,7 +72,7 @@ const Approvals : React.FC<ApprovalsProps> = (props:ApprovalsProps) =>  {
               <div className="text-center">{comment.name}<br/>
                 {comment.email}</div>
               </td>
-              <td><h6 className="mb-2 font-weight-bold"><i className="far fa-calendar-alt"></i> {moment(comment.posted).calendar()}</h6><div>{comment.content}</div></td>
+              <td><h6 className="mb-2 font-weight-bold"><i className="far fa-calendar-alt"></i> {moment(comment.posted).calendar()}</h6><div className="comment-content" dangerouslySetInnerHTML={{__html: comment.content}}></div></td>
               <td className="text-nowrap">
                 <button type="button" className="btn btn-sm btn-success btn-round mr-1" title="Approve" onClick={(e) => approveComment(e, comment)}><i className="fas fa-check"></i></button> 
                 <button type="button" className="btn btn-sm btn-danger btn-round"  title="Delete" onClick={(e) => deleteComment(e, comment)}><i className="far fa-trash-alt"></i></button></td>

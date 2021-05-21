@@ -59,7 +59,7 @@ const rejectComment = (event: React.MouseEvent<HTMLElement,MouseEvent>, comment 
               <div className="text-center">{comment.name}<br/>
                 {comment.email}</div>
               </td>
-              <td><h6 className="mb-2 font-weight-bold"><i className="far fa-calendar-alt"></i> {moment(comment.posted).calendar()}</h6><div className="comment-content">{comment.content}</div></td>
+              <td><h6 className="mb-2 font-weight-bold"><i className="far fa-calendar-alt"></i> {moment(comment.posted).calendar()}</h6><div className="comment-content" dangerouslySetInnerHTML={{__html: comment.content}} ></div></td>
               <td className="text-nowrap">
               { auth.status === 'loaded' && auth.payload.isInAnyRole(['admin','approve']) && <button type="button" className="btn btn-sm btn-outline-primary btn-round" title="Reject" onClick={(e) => rejectComment(e, comment)}><i className="fas fa-times"></i></button> }
               </td>

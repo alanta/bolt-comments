@@ -9,6 +9,7 @@ namespace Bolt.Comments.Contract
         public string Name {get; set;} = "";
         public string Email {get; set;} = "";
         public string Content {get;set;} = "";
+        public string Markdown {get;set;} = "";
         public string Avatar {get;set;} = "";
         public DateTime Posted { get; set;} = DateTime.MinValue;
         public bool Approved { get; set; }

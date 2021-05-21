@@ -1,5 +1,6 @@
 using Bolt.Comments.Domain;
 using Bolt.Comments.WebHooks;
+using Markdig;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,6 +15,7 @@ namespace Bolt.Comments
             builder.Services.AddScoped<SettingsService>();
             builder.Services.AddScoped<Authorization>();
             builder.Services.AddScoped<INotifyComment, NotifyComment>();
+            builder.Services.AddSingleton<Contract.Mapper>();
         }
     }
 }

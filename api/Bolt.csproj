@@ -6,6 +6,9 @@
     <RootNamespace>Bolt.Comments</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.33" />
+    <PackageReference Include="MarkDig" Version="0.24.0" />
+    <PackageReference Include="MarkdownSharp" Version="2.0.5" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="4.0.4" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
@@ -19,4 +22,8 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
   </ItemGroup>
+  <!--fixup for nCrunch -->
+  <PropertyGroup Condition="'$(NCrunch)' == '1'">
+    <ExcludeRestorePackageImports>true</ExcludeRestorePackageImports>
+  </PropertyGroup>
 </Project>

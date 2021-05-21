@@ -16,10 +16,12 @@ namespace Bolt.Comments
     public class ListComments
     {
         private readonly Authorization _authorization;
+        private readonly Mapper _mapper;
 
-        public ListComments(Authorization authorization)
+        public ListComments(Authorization authorization, Mapper mapper)
         {
             _authorization = authorization ?? throw new ArgumentNullException(nameof(authorization));
+            _mapper = mapper;
         }
 
 
@@ -48,7 +50,7 @@ namespace Bolt.Comments
                 return new NoContentResult();
             }
 
-            return new OkObjectResult(Mapper.Map(comments));
+            return new OkObjectResult(_mapper.Map(comments));
         }
 
         [FunctionName(nameof(ListCommentsForApproval))]
@@ -76,7 +78,7 @@ namespace Bolt.Comments
                 return new NoContentResult();
             }
 
-            return new OkObjectResult(Mapper.Map(comments));
+            return new OkObjectResult(_mapper.Map(comments));
         }
     }
 

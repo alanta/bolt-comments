@@ -24,4 +24,10 @@ yarn-error.log*
 
 # .NET Functions output
 api/[Bb]in/
-api/[Oo]bj/
+[Oo]bj/
+[Dd]ebug
+[Rr]elease
+*.ncrunch*
+_NCrunch*
+*.user
+.vs

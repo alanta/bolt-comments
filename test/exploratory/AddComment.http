@@ -1,0 +1,9 @@
+POST http://localhost:7071/api/comment
+x-bolt-api-key: KHNShO0yNmtmN3mHTV6y
+
+{
+    "name": "test",
+    "email": "test@test.nl",
+    "path": "2021/testing-your-ass",
+    "Content": "# Hi there\n## I can do ~~awesome~~ stuff\n\nWith markdown"
+}
