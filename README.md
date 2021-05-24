@@ -135,3 +135,4 @@ Azure Static Web Apps [do not support any other triggers than HTTP]() on the fun
 ## Credits
 
 * The UI is based on Bootstrap and the [Anchor UI Kit](https://wowthemesnet.github.io/Anchor-Bootstrap-UI-Kit/index.html) from Wowthemes.
+* The Bolt Comments logo is based on the FontAwesome bolt icon, [licensed](https://fontawesome.com/license/free) under Creative Commons Attribution 4.0 International license. 
