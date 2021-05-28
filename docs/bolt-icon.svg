@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="256"
+   height="256"
+   viewBox="0 0 67.733332 67.733335"
+   version="1.1"
+   id="svg8"
+   inkscape:export-filename="C:\Users\marni\Downloads\bolt-logo-512.png"
+   inkscape:export-xdpi="192"
+   inkscape:export-ydpi="192"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="bolt-icon.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.1483789"
+     inkscape:cx="54.156929"
+     inkscape:cy="87.596155"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="2560"
+     inkscape:window-height="1377"
+     inkscape:window-x="1912"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-229.26665)">
+    <path
+       id="path4528"
+       d="M 50.713594,251.98914 H 37.317371 l 4.945226,-15.06784 c 0.46434,-1.7645 -0.870638,-3.50577 -2.693174,-3.50577 H 22.853166 c -1.393022,0 -2.57709,1.03315 -2.762826,2.41457 l -3.714724,27.86042 c -0.220561,1.67163 1.079592,3.15752 2.762826,3.15752 h 13.779303 l -5.351524,22.57856 c -0.417906,1.76449 0.928682,3.42451 2.704784,3.42451 0.975115,0 1.903795,-0.51078 2.41457,-1.39302 l 20.43098,-35.28988 c 1.079592,-1.84575 -0.255387,-4.17907 -2.402961,-4.17907 z"
+       inkscape:connector-curvature="0"
+       style="fill:#ffde03;fill-opacity:1;stroke-width:0.26458332" />
+  </g>
+</svg>
