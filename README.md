@@ -49,7 +49,7 @@ This project is still in development but it should be safe enough to use for sma
 
 ## Deploy your own instance
 
-[![Deploy To Azure](https://raw.githubusercontent.com/alanta/bolt-comments/feature/arm-deployment/docs/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Falanta%2Ffeature%2Farm-deployment%2Fdeploy%2Fazuredeploy.json)
+[![Deploy To Azure](https://raw.githubusercontent.com/alanta/bolt-comments/feature/arm-deployment/docs/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Falanta%2Fbolt-comments%2Ffeature%2Farm-deployment%2Fdeploy%2Fazuredeploy.json)
 
 For now, the easiest way is to fork this repo and deploy it from VS Code.
 
