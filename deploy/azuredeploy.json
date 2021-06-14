@@ -35,6 +35,12 @@
                 "description": "The name of the new repository"
             }
         },
+        "repositoryToken": {
+            "type": "SecureString",
+            "metadata":{
+                "description": "The Github repository token"
+            }
+        },
         "repositoryIsPrivate": {
             "defaultValue": false,
             "type": "bool",
@@ -108,6 +114,7 @@
             "properties": {
                  "templateProperties": {
                     "templateRepositoryUrl": "https://github.com/alanta/bolt-comments",
+                    "repositoryToken": "[parameters('repositoryToken')]",
                     "owner": "[parameters('repositoryOwner')]",
                     "repositoryName": "[parameters('repositoryName')]",
                     "description": "Bolt Comments",
