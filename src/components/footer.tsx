@@ -7,8 +7,8 @@ export default function Footer(props:any) {
         <div className="container">
             <div className="row">
                 <div className="col-12 col-md mr-4">
-                    <i className="fas fa-copyright text-white"></i>
-                    <small className="d-block mt-3 text-muted">© {new Date().getFullYear()} Alanta </small>
+                   
+                    <small className="d-block mt-3 text-muted"> <i className="fas fa-copyright text-white"></i> {new Date().getFullYear()} Alanta </small>
                 </div>
                 <div className="col-6 col-md">
                     <h5 className="mb-4 text-white">Features</h5>
