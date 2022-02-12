@@ -155,7 +155,7 @@ From a terminal window start the React dev server:
 This will launch the react dev server on [http://localhost:3000](http://localhost:3000) . However Azure Static Web Apps use a proxy service to integrate functions, authentication and other features.
 So in a new terminal run the full app using the Azure Static WebApp CLI:
 
-`swa start http://localhost:3000 --api ./api`
+`swa start http://localhost:3000 --api-location ./api`
 
 This should launch the Bolt UI on [http://localhost:4280/](http://localhost:4280/)
 
