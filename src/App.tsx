@@ -50,7 +50,7 @@ function App() {
             <Approvals approvalsService={service} removeItem={removeItem} refresh={refresh} />
           </Route>
           <Route path="/comments">
-            <Comments />
+            <Comments refresh={refresh} />
           </Route>
           <PrivateRoute path="/settings" roles={["admin"]}>
             <Settings />

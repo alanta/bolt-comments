@@ -18,17 +18,18 @@ const Approvals : React.FC<ApprovalsProps> = (props:ApprovalsProps) =>  {
   const updateService = useUpdateCommentService();
   useEffect(() => {
       document.title = "Approvals - Bolt Comments"
-      refresh()
   }, []);
 
   const approveComment = (event: React.MouseEvent<HTMLElement,MouseEvent>, comment : Comment) => {
     event.preventDefault();
     updateService.approveComment(comment.id).then(() =>{ removeItem(comment) })
+    refresh();
   };
 
   const deleteComment = (event: React.MouseEvent<HTMLElement,MouseEvent>, comment : Comment) => {
     event.preventDefault();
     updateService.deleteComment(comment.id).then(() =>{ removeItem(comment) })
+    refresh();
   };
 
   return (
