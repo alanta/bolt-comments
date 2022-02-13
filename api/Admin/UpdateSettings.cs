@@ -2,7 +2,6 @@ using Bolt.Comments.Contract;
 using Bolt.Comments.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
@@ -24,9 +23,7 @@ namespace Bolt.Comments.Admin
 
         [FunctionName(nameof(UpdateSettings))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "settings")] HttpRequest req,
-            [Table(Tables.Settings)] CloudTable table,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "settings")] HttpRequest req, ILogger log)
         {
             if (!await _authorization.IsAuthorized(req, Authorization.Roles.Admin))
             {
@@ -39,26 +36,26 @@ namespace Bolt.Comments.Admin
                 return data.ValidationError();
             }
 
-            var settings = await _settings.GetSettings(table);
+            var settings = await _settings.GetSettings();
 
-            if( !string.IsNullOrEmpty(data.Value.ApiKey) )
+            if( !string.IsNullOrEmpty(data.Value?.ApiKey) )
             {
                 settings.ApiKey = data.Value.ApiKey;
             }
 
-            if( data.Value.WebHookNewComment != null )
+            if( data.Value?.WebHookNewComment != null )
             {
                 // can be empty to disable webhook
                 settings.WebHookNewComment = data.Value.WebHookNewComment;
             }
 
-            if( data.Value.WebHookCommentPublished != null )
+            if( data.Value?.WebHookCommentPublished != null )
             {
                 // can be empty to disable webhook
                 settings.WebHookCommentPublished = data.Value.WebHookCommentPublished;
             }
 
-            await _settings.Save(table, settings);
+            await _settings.Save(settings);
 
             return new OkResult();
         }

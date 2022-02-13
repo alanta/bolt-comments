@@ -7,8 +7,9 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Azure.Cosmos.Table;
 using System.Linq;
+using System.Threading;
+using System.Linq.Expressions;
 
 namespace Bolt.Comments
 {
@@ -17,11 +18,13 @@ namespace Bolt.Comments
     {
         private readonly Authorization _authorization;
         private readonly Mapper _mapper;
+        private readonly ITableClientFactory _tableClientFactory;
 
-        public ListComments(Authorization authorization, Mapper mapper)
+        public ListComments(Authorization authorization, Mapper mapper, ITableClientFactory tableClientFactory)
         {
             _authorization = authorization ?? throw new ArgumentNullException(nameof(authorization));
             _mapper = mapper;
+            _tableClientFactory = tableClientFactory;
         }
 
 
@@ -29,23 +32,27 @@ namespace Bolt.Comments
         public async Task<IActionResult> ListApprovedComments(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "comment/approved/{*path}")] HttpRequest req,
             [FromQuery] string? path,
-            [Table(Tables.Comments)] CloudTable table,
-            ILogger log)
+            ILogger log,
+            CancellationToken cancellationToken)
         {
             if( !await _authorization.IsAuthorized(req, Authorization.Roles.Authenticated, Authorization.Roles.ListComments ))
             {
                 return new UnauthorizedResult();
             }
 
-            var query =  new TableQuery<Comment>().Where(
-                TableQuery.GenerateFilterConditionForBool( nameof(Comment.Approved), QueryComparisons.Equal, true )
-                .AddPathQuery(path))
-                .OrderBy(nameof(Comment.PartitionKey))
-                .Take(250);
-           
-            var comments = await table.QueryAsync<Comment>(query);
+            Expression<Func<Comment,bool>> filter = 
+                string.IsNullOrWhiteSpace(path) ? 
+                    c => c.Approved : 
+                    c => c.Approved && string.Equals(c.PartitionKey, HttpUtility.UrlEncode(path), StringComparison.OrdinalIgnoreCase);
 
-            if( comments == null || comments.Count() == 0 )
+            var table = await _tableClientFactory.GetTable(Tables.Comments);
+
+            var comments = await table.QueryAsync( filter, cancellationToken: cancellationToken )
+                .OrderBy(c => c.Posted)
+                .Take(250)
+                .ToArrayAsync();
+
+            if( comments == null || !comments.Any() )
             {
                 return new NoContentResult();
             }
@@ -57,23 +64,27 @@ namespace Bolt.Comments
         public async Task<IActionResult> ListCommentsForApproval(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "comment/approvals/{*path}")] HttpRequest req,
             [FromQuery] string? path,
-            [Table(Tables.Comments)] CloudTable table,
-            ILogger log)
+            ILogger log,
+            CancellationToken cancellationToken)
         {
             if( !await _authorization.IsAuthorized(req, Authorization.Roles.Authenticated ))
             {
                 return new UnauthorizedResult();
             }
 
-            TableQuery<Comment> query = new TableQuery<Comment>().Where(
-                 TableQuery.GenerateFilterConditionForBool( nameof(Comment.Approved), QueryComparisons.Equal, false )
-                 .AddPathQuery(path))
-                 .OrderBy(nameof(Comment.Posted))
-                 .Take(250);
-           
-            var comments = await table.QueryAsync<Comment>(query);
+            Expression<Func<Comment, bool>> filter =
+               string.IsNullOrWhiteSpace(path) ?
+                   c => !c.Approved :
+                   c => !c.Approved && string.Equals(c.PartitionKey, HttpUtility.UrlEncode(path), StringComparison.OrdinalIgnoreCase);
 
-            if( comments == null || comments.Count() == 0 )
+            var table = await _tableClientFactory.GetTable(Tables.Comments);
+
+            var comments = await table.QueryAsync<Comment>(filter, cancellationToken: cancellationToken)
+               .OrderBy(c => c.Posted)
+               .Take(250)
+               .ToArrayAsync();
+
+            if( comments == null || !comments.Any() )
             {
                 return new NoContentResult();
             }
@@ -81,22 +92,4 @@ namespace Bolt.Comments
             return new OkObjectResult(_mapper.Map(comments));
         }
     }
-
-    public static class TableQueryHelper
-    {
-        public static string AddPathQuery( this string filter, string? path )
-        {
-            if (string.IsNullOrEmpty(path))
-            {
-                return filter;
-            }
-
-            return TableQuery.CombineFilters(
-                filter,
-                TableOperators.And,
-                TableQuery.GenerateFilterCondition(nameof(Comment.PartitionKey), QueryComparisons.Equal, HttpUtility.UrlEncode( path )));
-
-        }
-    }
-
 }

@@ -13,7 +13,7 @@ namespace Bolt.Comments
     public class HttpResponseBody<T>
     {
         public bool IsValid { get; set; }
-        public T Value { get; set; }
+        public T? Value { get; set; }
         public IEnumerable<ValidationResult> ValidationResults { get; set; } = Array.Empty<ValidationResult>();
     }
 
@@ -30,7 +30,7 @@ namespace Bolt.Comments
         /// <param name="form">The form data to bind.</param>
         /// <param name="request">The request.</param>
         /// <returns>A new instance of type <typeparamref name="T" /> containing the form data.</returns>
-        public static async Task<HttpResponseBody<T>>  GetFormAsync<T>(this HttpRequest request) where T : new()
+        public static async Task<HttpResponseBody<T>> GetFormAsync<T>(this HttpRequest request) where T : new()
         {
             // based on https://stackoverflow.com/a/60284398/64096
             var body = new HttpResponseBody<T>();
