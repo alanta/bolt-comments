@@ -9,14 +9,16 @@ export interface ApprovalsProps
 {
   approvalsService: Service<CommentsByKey[]>;
   removeItem: (comment: Comment) => void;
+  refresh: () => void;
 }
 
 const Approvals : React.FC<ApprovalsProps> = (props:ApprovalsProps) =>  {
 
-  const { approvalsService, removeItem } = {...props};
+  const { approvalsService, removeItem, refresh } = {...props};
   const updateService = useUpdateCommentService();
   useEffect(() => {
       document.title = "Approvals - Bolt Comments"
+      refresh()
   }, []);
 
   const approveComment = (event: React.MouseEvent<HTMLElement,MouseEvent>, comment : Comment) => {
@@ -54,7 +56,7 @@ const Approvals : React.FC<ApprovalsProps> = (props:ApprovalsProps) =>  {
             <tr>
               <th scope="col" className="w-10">From</th>
               <th scope="col" className="w-auto">Comment</th>
-              <th scope="col" className="w-10">Actions</th>
+              <th scope="col" className="w-10">Actions <i className="fas fa-sync" onClick={() => refresh()}></i></th>
             </tr>
           </thead>
           <tbody>

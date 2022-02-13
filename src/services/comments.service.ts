@@ -46,6 +46,7 @@ export const useCommentsService = () => {
 };
 
 export const useApprovalsService = () => {
+  const [cacheInvalidator, setCacheInvalidator] = useState(0);
   const [result, setResult] = useState<Service<CommentsByKey[]>>({
     status: 'loading'
   });
@@ -60,7 +61,7 @@ export const useApprovalsService = () => {
       })
       .then(data => setResult({ status: 'loaded', payload: data }))
       .catch(error => setResult({ status: 'error', error }));
-  }, []);
+  }, [cacheInvalidator]);
 
   const removeItem = (comment:Comment) =>{
     if(result.status === 'loaded'){
@@ -85,7 +86,12 @@ export const useApprovalsService = () => {
     }
   }
 
-  return { service : result, removeItem };
+  const refresh = () => {
+    setCacheInvalidator(cacheInvalidator + 1)
+    console.log('Invalidate cache '+cacheInvalidator)
+  }
+
+  return { service : result, removeItem, refresh };
 };
 
 const useUpdateCommentService = () => {
