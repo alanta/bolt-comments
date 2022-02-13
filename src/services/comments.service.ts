@@ -88,7 +88,6 @@ export const useApprovalsService = () => {
 
   const refresh = () => {
     setCacheInvalidator(cacheInvalidator + 1)
-    console.log('Invalidate cache '+cacheInvalidator)
   }
 
   return { service : result, removeItem, refresh };
