@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/0.5.7-alpha">
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>c28e1db3-62b7-4dde-a2a9-6beb4b222387</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupCommand>set BROWSER=none&amp;&amp;yarn start</StartupCommand>
+	<BuildCommand>yarn build</BuildCommand>
+    <JavaScriptTestRoot>src\</JavaScriptTestRoot>
+    <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Script Include="src/**;" Exclude="*.esproj;**\node_modules\**" />
+	 <None Include="public/**" />
+	  <None Include="package.json;tsconfig.json;yarn.lock;.gitignore" />
+  </ItemGroup>
+  <!-- This target is copied from the ASP.NET SPA template in order to ensure node_modules are in place. -->
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+    <!-- Ensure Node.js is installed -->
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="yarn install" />
+  </Target>
+</Project>

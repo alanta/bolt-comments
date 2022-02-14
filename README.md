@@ -4,8 +4,8 @@ Simple blog comments with Azure Functions
 
 ## About this project
 
-This project provides easy self-hosted comments for your blog on Azure Functions, including a management app running in an Azure Static Web Apps (SWA).
-The backing store is Azure Storage Tables.
+This project provides easy self-hosted comments for your blog, including a management app. It runs on an Azure Static Web App (SWA) in .NET 6 with Azure Functions v4.
+Data is stored is Azure Storage Tables.
 
 ### Project Status : _Beta_ ⚠
 

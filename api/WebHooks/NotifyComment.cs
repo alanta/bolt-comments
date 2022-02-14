@@ -17,7 +17,7 @@ namespace Bolt.Comments.WebHooks
         private static readonly JsonSerializerOptions serializationOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            IgnoreNullValues = false,
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
         };
 
         public NotifyComment(SettingsService settings)

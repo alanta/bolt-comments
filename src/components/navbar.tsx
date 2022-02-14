@@ -27,8 +27,8 @@ export default function Navbar(props:NavbarProps) {
                 <Link className="nav-link" to="/comments">Comments</Link>
 			</li>
             { auth.status === 'loaded' && auth.payload.isInAnyRole(['admin','approve']) &&
-            <li className="nav-item">
-                <Link className="nav-link" to="/approvals">Approvals {service.status === 'loaded' && service.payload.length > 0 && <span className="badge badge-info ml-2">{service.payload.reduce((sum: number, b: CommentsByKey) => sum + b.comments.length, 0)}</span>}</Link>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/approvals">Approvals {service.status === 'loaded' && service.payload?.length > 0 && <span className="badge badge-info ml-2">{service.payload.reduce((sum: number, b: CommentsByKey) => sum + b.comments.length, 0)}</span>}</Link>
 			</li>
             }
             { auth.status === 'loaded' && auth.payload.isInRole('admin') &&

@@ -18,18 +18,19 @@ namespace Bolt.Comments
         private readonly Authorization _authorization;
         private readonly INotifyComment _notifier;
         private readonly Mapper _mapper;
+        private readonly ITableClientFactory _tableClientFactory;
 
-        public AddComment(Authorization authorization, INotifyComment notifyComment, Mapper mapper)
+        public AddComment(Authorization authorization, INotifyComment notifyComment, Mapper mapper, ITableClientFactory tableClientFactory)
         {
             _authorization = authorization;
             _notifier = notifyComment;
             _mapper = mapper;
+            _tableClientFactory = tableClientFactory;
         }
 
         [FunctionName(nameof(AddComment))]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "comment")] HttpRequest req,
-            [Table(Tables.Comments)] IAsyncCollector<Comment> table,
             CancellationToken ct,
             ILogger log)
         {
@@ -46,7 +47,7 @@ namespace Bolt.Comments
 
             var newComment = new Comment{
                 RowKey = Guid.NewGuid().ToString("N"),
-                PartitionKey = HttpUtility.UrlEncode( data.Value.Path ),
+                PartitionKey = HttpUtility.UrlEncode( data.Value!.Path ),
                 Posted = DateTime.UtcNow,
                 Content = _mapper.PurgeContent(data.Value.Content),
                 Email = data.Value.Email,
@@ -54,7 +55,13 @@ namespace Bolt.Comments
                 InReplyTo = data.Value.InReplyTo
             };
             
-            await table.AddAsync( newComment );
+            var table = await _tableClientFactory.GetTable(Tables.Comments);
+            var response = await table.AddEntityAsync(newComment, ct);
+            if( response.IsError )
+            { 
+                log.LogError("Failed to store new comment on {path}. Table client failed with status {status}", newComment.PartitionKey, response.Status);
+                return new StatusCodeResult(response.Status);
+            }
 
             await _notifier.NotifyNewComment(_mapper.MapEvent(newComment, "Added"), log, ct);
 
@@ -64,7 +71,6 @@ namespace Bolt.Comments
         [FunctionName(nameof(ImportComment))]
         public async Task<IActionResult> ImportComment(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "comment/import")] HttpRequest req,
-            [Table(Tables.Comments)] IAsyncCollector<Comment> table,
             ILogger log)
         {
             if( !await _authorization.IsAuthorized(req, Authorization.Roles.ImportComment, Authorization.Roles.Admin ))
@@ -78,7 +84,9 @@ namespace Bolt.Comments
                return data.ValidationError();
             }
 
-            foreach( var item in data.Value )
+            var table = await _tableClientFactory.GetTable(Tables.Comments);
+
+            foreach ( var item in data.Value! )
             {
                 var newComment = new Comment{
                     RowKey = item.Id ?? Guid.NewGuid().ToString("N"),
@@ -88,7 +96,12 @@ namespace Bolt.Comments
                     Email = item.Email,
                     Name = item.Name
                 };
-                await table.AddAsync( newComment );
+
+                var response = await table.AddEntityAsync( newComment );
+                if (response.IsError)
+                {
+                    log.LogError("Failed to store new comment. Table client failed with status {status}", response.Status);
+                }
             }
 
             return new AcceptedResult();

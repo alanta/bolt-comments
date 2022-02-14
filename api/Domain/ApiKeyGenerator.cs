@@ -11,12 +11,9 @@ namespace Bolt.Comments.Domain
 
         public static string GetUniqueKey(int size)
         {
-            byte[] data = new byte[4 * size];
-            using (RNGCryptoServiceProvider crypto = new RNGCryptoServiceProvider())
-            {
-                crypto.GetBytes(data);
-            }
-            StringBuilder result = new StringBuilder(size);
+            byte[] data = RandomNumberGenerator.GetBytes(size*4);
+            
+            var result = new StringBuilder(size);
             for (int i = 0; i < size; i++)
             {
                 var rnd = BitConverter.ToUInt32(data, i * 4);

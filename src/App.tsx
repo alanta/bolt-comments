@@ -34,7 +34,7 @@ function App() {
     AOS.refresh();
   }, []);
 
-  const { service, removeItem } = useApprovalsService();
+  const { service, removeItem, refresh } = useApprovalsService();
 
   return (
     <Router>
@@ -47,10 +47,10 @@ function App() {
             <Home />
           </Route>
           <Route path="/approvals">
-            <Approvals approvalsService={service} removeItem={removeItem} />
+            <Approvals approvalsService={service} removeItem={removeItem} refresh={refresh} />
           </Route>
           <Route path="/comments">
-            <Comments />
+            <Comments refresh={refresh} />
           </Route>
           <PrivateRoute path="/settings" roles={["admin"]}>
             <Settings />

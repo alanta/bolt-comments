@@ -5,7 +5,13 @@ import useUpdateCommentService, { useCommentsService } from 'services/comments.s
 import { Comment } from 'models/comment';
 import { useAuth } from "services/auth.service";
 
-const Comments : React.FC<{}> = () =>  {
+export interface CommentsProps 
+{
+  refresh: () => void;
+}
+
+const Comments : React.FC<CommentsProps> = (props: CommentsProps) =>  {
+  const { refresh } = {...props};
   const {service, removeItem} = useCommentsService();
   const updateService = useUpdateCommentService();
   const auth = useAuth();
@@ -17,6 +23,7 @@ const Comments : React.FC<{}> = () =>  {
 const rejectComment = (event: React.MouseEvent<HTMLElement,MouseEvent>, comment : Comment) => {
   event.preventDefault();
   updateService.rejectComment(comment.id).then(() =>{ removeItem(comment) })
+  refresh();
 };
 
   return (

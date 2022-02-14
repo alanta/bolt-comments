@@ -1,7 +1,6 @@
 using Bolt.Comments.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
@@ -24,7 +23,6 @@ namespace Bolt.Comments.Admin
         [FunctionName(nameof(GetSettings))]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "settings")] HttpRequest req,
-            [Table(Tables.Settings)] CloudTable table,
             ILogger log)
         {
             if (!await _authorization.IsAuthorized(req, Authorization.Roles.Admin))
@@ -32,7 +30,7 @@ namespace Bolt.Comments.Admin
                 return new UnauthorizedResult();
             }
 
-            var settings = await _settings.GetSettings(table);
+            var settings = await _settings.GetSettings();
 
             return new OkObjectResult(new { ApiKey = settings.ApiKey, WebHookNewComment = settings.WebHookNewComment, WebHookCommentPublished = settings.WebHookCommentPublished });
         }

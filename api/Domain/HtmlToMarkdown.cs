@@ -92,7 +92,7 @@ namespace Bolt.Comments
 
                     break;
                 case HtmlNodeType.Element:
-                    string endElementString = null;
+                    string? endElementString = null;
                     bool isInline;
                     bool skip = false;
                     int listIndex = 0;

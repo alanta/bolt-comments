@@ -1,27 +1,21 @@
 using Bolt.Comments.Admin;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Azure.Data.Tables;
 
 namespace Bolt.Comments.Domain
 {
     public class SettingsService 
     {
         public const string TableName = "Settings";
-        public const string Connection = "DataStorage";
 
-        public SettingsService(IConfiguration configuration, ILogger<SettingsService> logger)
+        public SettingsService(ITableClientFactory tableClientFactory)
         {
-            _configuration = configuration;
-            _logger = logger;
+            _tableClientFactory = tableClientFactory;
         }
 
         private static SettingsEntity? _settings; // using static as poormans cache
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<SettingsService> _logger;
+        private readonly ITableClientFactory _tableClientFactory;
 
         public async Task<ApiKey[]> GetApiKeys()
         {
@@ -48,14 +42,12 @@ namespace Bolt.Comments.Domain
                 return _settings;
             }
 
-            var table = await GetTable(TableName);
-
+            var table = await _tableClientFactory.GetTable(Tables.Settings);
             return await GetSettings(table);
         }
 
-        public async Task<SettingsEntity> GetSettings(CloudTable table){
-            var query =  new TableQuery<SettingsEntity>().Take(1);
-            var settings = (await table.QueryAsync<SettingsEntity>(query)).FirstOrDefault();
+        public async Task<SettingsEntity> GetSettings(TableClient table){
+            var settings = await table.QueryAsync<SettingsEntity>(maxPerPage: 1).FirstOrDefaultAsync();
 
             if( settings == null )
             {
@@ -66,10 +58,15 @@ namespace Bolt.Comments.Domain
             return _settings = settings;
         }
 
-        public async Task Save(CloudTable table, SettingsEntity settings)
+        public async Task Save(SettingsEntity settings)
         {
-            var updateOp = TableOperation.InsertOrReplace(settings);
-            await table.ExecuteAsync(updateOp);
+            var table = await _tableClientFactory.GetTable(Tables.Settings);
+            await Save( table, settings );
+        }
+
+        private async Task Save(TableClient table, SettingsEntity settings)
+        {
+            await table.UpsertEntityAsync(settings);
         }
 
         public SettingsEntity InitializeSettings(){
@@ -78,39 +75,6 @@ namespace Bolt.Comments.Domain
                 PartitionKey = "Settings",
                 ApiKey = ApiKeyGenerator.GetUniqueKey(20)
             };
-        }
-
-        private CloudStorageAccount CreateStorageAccount(string storageConnectionString)
-        {
-            CloudStorageAccount storageAccount;
-            try
-            {
-                storageAccount = CloudStorageAccount.Parse(storageConnectionString);
-            }
-            catch (FormatException)
-            {
-                _logger.LogError("Invalid storage account information provided. Please confirm the AccountName and AccountKey are valid in the app.config file - then restart the application.");
-                throw;
-            }
-            catch (ArgumentException)
-            {
-                _logger.LogError("Invalid storage account information provided. Please confirm the AccountName and AccountKey are valid in the app.config file - then restart the application.");
-                throw;
-            }
-
-            return storageAccount;
-        }
-
-        private async Task<CloudTable> GetTable(string tableName)
-        {
-            string storageConnectionString = _configuration.GetValue<string>(Connection);
-
-            CloudStorageAccount storageAccount = CreateStorageAccount(storageConnectionString);
-            CloudTableClient tableClient = storageAccount.CreateCloudTableClient(new TableClientConfiguration());
-            CloudTable table = tableClient.GetTableReference(tableName);
-            await table.CreateIfNotExistsAsync();
-
-            return table;
         }
     }
 }
