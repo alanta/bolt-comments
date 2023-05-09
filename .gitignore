@@ -9,7 +9,7 @@
 /coverage
 
 # production
-/build
+/dist
 
 # misc
 .DS_Store
@@ -31,3 +31,5 @@ api/[Bb]in/
 _NCrunch*
 *.user
 .vs
+.parcel-cache
+build

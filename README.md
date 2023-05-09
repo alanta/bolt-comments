@@ -152,7 +152,7 @@ From a terminal window start the React dev server:
 
 `yarn start`
 
-This will launch the react dev server on [http://localhost:3000](http://localhost:3000) . However Azure Static Web Apps use a proxy service to integrate functions, authentication and other features.
+This will launch the react dev server on [http://localhost:1234](http://localhost:1234) . However Azure Static Web Apps use a proxy service to integrate functions, authentication and other features.
 So in a new terminal run the full app using the Azure Static WebApp CLI:
 
 `swa start http://localhost:3000 --api-location ./api`
@@ -165,11 +165,10 @@ In VS Code: hit `ctrl-f5` to launch just the functions. Note that authentication
 
 ## Front-end development
 
-The UI is a plain vanilla React app, created with [create-react-app](https://facebook.github.io/create-react-app). In the project directory, you can run:
+The UI is a plain vanilla React app. In the project directory, you can run:
 
-* `yarn start` Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.\
+* `yarn start` Runs the app in the development mode. Open [http://localhost:1234](http://localhost:1234) to view it in the browser.  
   The page will reload if you make edits. You will also see any lint errors in the console.
-* `yarn test` Launches the test runner in the interactive watch mode.
 * `yarn build` Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
