@@ -1,4 +1,7 @@
-﻿# ⚡ Bolt Comments
+> [!WARNING]
+> **This code is no longer under active maintenance. There are lots of outdated js dependencies with known vulnerabilities. I'm working on an HTMX based version and will not be updating this version.**
+ 
+ # ⚡ Bolt Comments
 
 Simple blog comments with Azure Functions
 
